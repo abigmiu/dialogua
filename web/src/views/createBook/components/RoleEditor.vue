@@ -38,14 +38,16 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { Dialog, Toast } from 'vant';
 import type { UploaderFileListItem } from 'vant';
+import type { IRole } from '@/types/Role';
 
 const VanDialog = Dialog.Component;
 
 const props = defineProps<{
     visible: Boolean;
+    roleData: IRole
 }>();
 const emits = defineEmits<{
     (e: 'update:visible', data: boolean): void;
@@ -64,10 +66,20 @@ const onClose = async (action: string) => {
 };
 
 const roleData = reactive({
+    id: 0,
     cover: '',
     name: '',
     introduction: '',
+    side: 'left',
 });
+watch(() => props.roleData, (value: IRole) => {
+    roleData.id = value.id || 0;
+    roleData.cover = value.cover;
+    roleData.name = value.name;
+    roleData.introduction = value.introduction;
+    roleData.side = value.side;
+})
+
 const coverFile = ref([]);
 const onOversize = () => {
     Toast('文件大小不能超过 2mb');

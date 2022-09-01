@@ -11,23 +11,23 @@
             <div class="role-btn">
                 <div class="title">左侧角色</div>
                 <div class="tip">可以随意添加多个角色</div>
-                <div class="add-icon left">
+                <div class="add-icon left" @click="createRole('left')">
                     <plus-icon fill="#ffffff" size="32" />
                 </div>
             </div>
             <div class="role-btn">
                 <div class="title">右侧角色</div>
                 <div class="tip">可以随意添加多个角色，通常主角在右边</div>
-                <div class="add-icon right">
+                <div class="add-icon right" @click="createRole('right')">
                     <plus-icon fill="#ffffff" size="32" />
                 </div>
             </div>
         </div>
 
         <div class="role-list">
-            <role-item></role-item>
+            <role-item @click="editRole"></role-item>
         </div>
-        <role-editor v-model:visible="editorVisible"></role-editor>
+        <role-editor v-model:visible="editorVisible" :roleData="roleData"></role-editor>
     </div>
 </template>
 <script lang="ts" setup>
@@ -35,8 +35,34 @@ import { ref } from 'vue';
 import { Plus as PlusIcon } from '@icon-park/vue-next';
 import RoleEditor from './components/RoleEditor.vue';
 import RoleItem from './components/RoleItem.vue';
+import type { IRole } from '@/types/Role';
 
-const editorVisible = ref(true);
+const editorVisible = ref(false);
+
+const roleData = ref<IRole>({
+    name: '',
+    avatar: '',
+    cover: '',
+    side: 'left',
+    introduction: '',
+})
+const createRole = (side: 'left' | 'right') => {
+    if (!(side === 'left' || side === 'right')) return;
+    roleData.value = {
+        name: '',
+        avatar: '',
+        cover: '',
+        side,
+        introduction: '',
+    }
+    editorVisible.value = true;
+}
+
+const editRole = (data: IRole) => {
+    roleData.value = data;
+    editorVisible.value = true;
+}
+
 </script>
 <style lang="scss" scoped>
 .role-btns {

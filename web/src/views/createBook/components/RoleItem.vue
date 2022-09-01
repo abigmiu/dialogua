@@ -42,6 +42,7 @@
     }
     .right {
         flex: 1;
+        align-self: start;
     }
     .introduction {
         font-size: 10px;
