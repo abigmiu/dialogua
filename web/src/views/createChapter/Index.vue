@@ -16,6 +16,7 @@
 
         <div class="list">
             <dialog-item
+                class="mt-4 mb-4"
                 v-for="item in dataList"
                 :key="item.id"
                 :source="item"
@@ -67,6 +68,37 @@ const dataList = ref<IDialog[]>([
         content: '内容2',
         duration: 123312311,
     },
+    {
+        id: 41,
+        roleName: '角色2',
+        roleId: 1,
+        roleAvatar: 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg',
+        side: 'right',
+        type: 'pic',
+        content: 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg',
+        duration: 123312311,
+    },
+    {
+        id: 5,
+        roleName: '角色2',
+        roleId: 1,
+        roleAvatar: 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg',
+        side: 'right',
+        type: 'pic',
+        content: 'https://images.unsplash.com/photo-1661984271289-62fee1082679?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw1fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60',
+        duration: 123312311,
+    },
+    {
+        id: 6,
+        roleName: '角色2',
+        roleId: 1,
+        roleAvatar: 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg',
+        side: 'right',
+        type: 'pic',
+        content: 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg',
+        duration: 123312311,
+    },
+
 ]);
 </script>
 <style lang="scss" scoped>

@@ -4,6 +4,7 @@ import 'virtual:windi.css';
 import App from './App.vue';
 import 'vant/es/toast/style';
 import 'vant/es/dialog/style';
+import 'vant/es/image-preview/style';
 import '@icon-park/vue-next/styles/index.css';
 
 import router from './router';

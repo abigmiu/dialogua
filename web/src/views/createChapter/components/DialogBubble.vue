@@ -16,6 +16,10 @@
                 :source="source"
                 v-if="source.type === 'voice'"
             ></voice-bubble>
+            <pic-bubble
+                :source="source"
+                v-if="source.type === 'pic'"
+            ></pic-bubble>
             <edit-tooltip :source="source"></edit-tooltip>
         </div>
     </div>
@@ -24,6 +28,7 @@
 import TextBubble from './TextBubble.vue';
 import VoiceBubble from './VoiceBubble.vue';
 import EditTooltip from './EditTooltip.vue';
+import PicBubble from './PicBubble.vue';
 import type { IDialog } from '@/types/Dialog';
 
 const props = defineProps<{
@@ -32,14 +37,15 @@ const props = defineProps<{
 </script>
 <style lang="scss" scoped>
 .dialog-wrapper {
-    margin-inline-end: 44px;
+    padding-right: 80px;
 }
 .avatar {
+    flex-shrink: 0;
     width: 40px;
     height: 40px;
     border-radius: 50%;
     overflow: hidden;
-    margin-inline-end: 12px;
+    margin-right: 12px;
     img {
         height: 100%;
         width: 100%;
@@ -48,7 +54,16 @@ const props = defineProps<{
 }
 .content {
     position: relative;
+    // flex: 1;
 }
 .right-bubble {
+    flex-direction: row-reverse;
+    padding-right: 0;
+    padding-left: 80px;
+
+    .avatar {
+        margin-right: 0;
+        margin-left: 12px;
+    }
 }
 </style>

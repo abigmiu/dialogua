@@ -18,6 +18,7 @@ const props = defineProps<{
     padding: 8px 12px;
     border-radius: 12px;
     position: relative;
+    font-size: 16px;
 
     &::before {
         content: '';
@@ -32,7 +33,7 @@ const props = defineProps<{
     }
 }
 .right-bubble {
-    .text-bubble {
+    .bubble {
         background: #00aff3;
         border-color: #00aff3;
         color: #fff;

@@ -1,7 +1,11 @@
 <!-- 对话框编辑菜单 -->
 <template>
-    <div class="editor-wrapper">
-        <van-popover v-model:show="showPopover" theme="dark">
+    <div class="editor-wrapper" @click="onOpened" ref="iconRef">
+        <van-popover
+            v-model:show="showPopover"
+            theme="dark"
+            :placement="placement"
+        >
             <div class="actions">
                 <div class="action-item" @click="onSelect('edit')">
                     <div>
@@ -33,13 +37,18 @@
                 </div>
             </div>
             <template #reference>
-                <pencil-icon theme="outline" size="12" fill="#333" />
+                <pencil-icon
+                    theme="outline"
+                    size="12"
+                    fill="#333"
+                    class="pencil"
+                />
             </template>
         </van-popover>
     </div>
 </template>
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { nextTick, reactive, ref } from 'vue';
 import {
     Pencil as PencilIcon,
     DoubleDown,
@@ -47,7 +56,7 @@ import {
     FileEditingOne,
     DeleteOne,
 } from '@icon-park/vue-next';
-import { Dialog } from 'vant';
+import { Dialog, Popover } from 'vant';
 
 import type { IDialog, IEditAction } from '@/types/Dialog';
 
@@ -55,6 +64,41 @@ const props = defineProps<{
     source: IDialog;
 }>();
 const showPopover = ref(false);
+const placement = ref('bottom');
+
+const iconRef = ref<HTMLElement>();
+const onOpened = () => {
+    if (!iconRef.value) return;
+
+    const { top, left, right, bottom } = iconRef.value.getBoundingClientRect();
+    const clientWidth = document.documentElement.clientWidth;
+    const clientHeight = document.documentElement.clientHeight;
+    console.log(clientWidth, clientHeight);
+
+    const isOverRight = clientWidth - right < 90;
+    const isOverBottom = clientHeight - bottom < 30;
+    const isOverLeft = left < 120;
+
+    if (isOverLeft) {
+        placement.value = 'bottom-start';
+    }
+    if (isOverRight) {
+        placement.value = 'bottom-end';
+    }
+    if (isOverBottom) {
+        placement.value = 'top';
+        if (isOverRight) {
+            placement.value = 'top-end';
+        }
+        if (isOverLeft) {
+            placement.value = 'top-start';
+        }
+    }
+    console.log(top, left, right, bottom);
+    if (right <= 10) {
+        placement.value = 'bottom-start';
+    }
+};
 
 const onSelect = (actions: IEditAction) => {
     switch (actions) {
@@ -77,8 +121,7 @@ const onSelect = (actions: IEditAction) => {
 const onDelete = () => {
     Dialog.confirm({
         message: '确定删除这条内容吗？',
-    })
-        .then(() => {})
+    }).then(() => {});
 };
 const onEdit = () => {};
 const onUpInsert = () => {};
@@ -87,14 +130,18 @@ const onDownInsert = () => {};
 <style lang="scss" scoped>
 .editor-wrapper {
     position: absolute;
-    left: 100%;
+    left: calc(100% + 12px);
     bottom: 0;
-    padding: 2px 8px;
     background-color: rgba(#ccc, 0.3);
     border-radius: 12px;
-    margin-left: 12px;
-    // display: flex;
-    // align-items: center;
+    font-size: 12px;
+
+    .pencil {
+        padding: 3px 10px;
+    }
+}
+.right-bubble .editor-wrapper {
+    left: -44px;
 }
 
 .actions {
