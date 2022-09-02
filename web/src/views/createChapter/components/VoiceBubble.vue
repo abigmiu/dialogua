@@ -1,12 +1,14 @@
-<!-- 气泡文字 -->
+<!-- 气泡语音 -->
 <template>
     <div class="bubble">
-        {{ source.content }}
+        <waves-left theme="outline" size="14" fill="#333" v-if="source.side === 'left'"/>
+        {{ source.duration }}
+        <waves-right theme="outline" size="14" fill="#333" v-if="source.side === 'right'"/>
     </div>
 </template>
 <script lang="ts" setup>
 import type { IDialog } from '@/types/Dialog';
-import { WavesLeft } from '@icon-park/vue-next'
+import { WavesLeft, WavesRight } from '@icon-park/vue-next'
 const props = defineProps<{
     source: IDialog;
 }>();
