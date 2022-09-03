@@ -6,7 +6,7 @@
 </template>
 <script lang="ts" setup>
 import type { IDialog } from '@/types/Dialog';
-import { WavesLeft } from '@icon-park/vue-next'
+import { WavesLeft } from '@icon-park/vue-next';
 const props = defineProps<{
     source: IDialog;
 }>();
@@ -37,11 +37,18 @@ const props = defineProps<{
         background: #00aff3;
         border-color: #00aff3;
         color: #fff;
-
         &::before {
-            border-bottom-left-radius: 0;
+            display: none;
+        }
+        &::after {
+            content: '';
+            position: absolute;
+            border: 8px solid transparent;
+            border-bottom-color: inherit;
+            top: 4px;
             border-bottom-right-radius: 80%;
             transform: rotate(-25deg) skewX(-10deg);
+            right: -8px;
         }
     }
 }

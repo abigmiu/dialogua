@@ -4,10 +4,9 @@ export interface IDialog {
     roleName: string;
     roleAvatar: string;
     id: number;
-    type: 'text' | 'voiceover' | 'pic' | 'voice';
+    type: 'text' | 'voiceover';
     content: string;
     side?: 'left' | 'right';
-    duration?: number;
 }
 
 

@@ -1,51 +1,42 @@
 <template>
     <div class="content-input-wrapper">
-        <!-- <div class="type icon" @click="toggleType">
-            <voice-icon
-                theme="outline"
-                size="16"
-                fill="#333"
-                v-if="type === 'text'"
-            />
-            <enter-the-keyboard theme="outline" size="16" fill="#333" v-else />
-        </div> -->
         <div class="input-box">
-            <text-input v-if="type === 'text'" v-model="currentValue.content"></text-input>
-            <voice-input v-else></voice-input>
+            <div class="text-input">
+                <van-field
+                    class="text-inner"
+                    :modelValue="modelValue"
+                    @update:model-value="onInput"
+                    rows="1"
+                    :autosize="{
+                        maxHeight: 64,
+                    }"
+                    type="textarea"
+                    placeholder="请输入"
+                />
+            </div>
         </div>
-        <div class="send icon">
+        <div class="send icon" @click="onConfirm">
             <send-icon theme="outline" size="16" fill="#333" />
         </div>
     </div>
 </template>
 <script lang="ts" setup>
-import { IDialog } from '@/types/Dialog';
-import {
-    Send as SendIcon,
-    Voice as VoiceIcon,
-    EnterTheKeyboard,
-} from '@icon-park/vue-next';
-import { ref,reactive } from 'vue';
-import TextInput from './TextInput.vue';
-import VoiceInput from './VoiceInput.vue';
+import { Send as SendIcon } from '@icon-park/vue-next';
 
-const type = ref<'voice' | 'text'>('text');
+const props = defineProps<{
+    modelValue: string;
+}>();
+const emits = defineEmits<{
+    (e: 'update:modelValue', value: string): void;
+    (e: 'confirm'): void;
+}>();
 
-const toggleType = () => {
-    if (type.value === 'voice') {
-        return (type.value = 'text');
-    }
-    type.value = 'voice';
+const onInput = (value: string) => {
+    emits('update:modelValue', value);
 };
-
-const currentValue: IDialog = reactive({
-    roleId: 0,
-    roleName: '',
-    roleAvatar: '',
-    content: '',
-    side: 'left',
-    type: 'text',
-})
+const onConfirm = () => {
+    emits('confirm');
+};
 </script>
 <style lang="scss" scoped>
 .content-input-wrapper {
@@ -66,6 +57,22 @@ const currentValue: IDialog = reactive({
         padding: 10px;
         border-radius: 15px;
         overflow: hidden;
+    }
+    .text-input {
+        display: flex;
+        line-height: 16px;
+        align-items: flex-end;
+        .text-inner {
+            flex: 1;
+            padding: 0;
+            background-color: inherit;
+            font-size: 14px;
+            line-height: inherit;
+        }
+        .pic-icon {
+            margin-left: 10px;
+            line-height: inherit;
+        }
     }
 }
 </style>

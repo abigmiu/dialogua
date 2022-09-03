@@ -10,25 +10,14 @@
             <div class="name">{{ source.roleName }}</div>
             <text-bubble
                 :source="source"
-                v-if="source.type === 'text'"
             ></text-bubble>
-            <voice-bubble
-                :source="source"
-                v-if="source.type === 'voice'"
-            ></voice-bubble>
-            <pic-bubble
-                :source="source"
-                v-if="source.type === 'pic'"
-            ></pic-bubble>
             <edit-tooltip :source="source"></edit-tooltip>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
 import TextBubble from './TextBubble.vue';
-import VoiceBubble from './VoiceBubble.vue';
 import EditTooltip from './EditTooltip.vue';
-import PicBubble from './PicBubble.vue';
 import type { IDialog } from '@/types/Dialog';
 
 const props = defineProps<{
