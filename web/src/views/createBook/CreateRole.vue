@@ -42,7 +42,6 @@ const editorVisible = ref(false);
 const roleData = ref<IRole>({
     name: '',
     avatar: '',
-    cover: '',
     side: 'left',
     introduction: '',
 })
@@ -51,7 +50,6 @@ const createRole = (side: 'left' | 'right') => {
     roleData.value = {
         name: '',
         avatar: '',
-        cover: '',
         side,
         introduction: '',
     }

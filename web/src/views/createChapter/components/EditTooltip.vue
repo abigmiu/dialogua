@@ -73,7 +73,6 @@ const onOpened = () => {
     const { top, left, right, bottom } = iconRef.value.getBoundingClientRect();
     const clientWidth = document.documentElement.clientWidth;
     const clientHeight = document.documentElement.clientHeight;
-    console.log(clientWidth, clientHeight);
 
     const isOverRight = clientWidth - right < 90;
     const isOverBottom = clientHeight - bottom < 30;

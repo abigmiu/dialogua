@@ -60,7 +60,9 @@ const props = defineProps<{
     flex-direction: row-reverse;
     padding-right: 0;
     padding-left: 80px;
-
+    .name {
+        text-align: right;
+    }
     .avatar {
         margin-right: 0;
         margin-left: 12px;

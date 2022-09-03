@@ -73,6 +73,11 @@
   resolved "https://registry.yarnpkg.com/@vant/use/-/use-1.4.2.tgz#57e29f57b408b573a784793430891012a9e12d21"
   integrity sha512-+30mOa/FY26qk8Ag/Cmqb51JaOgE9rS1xDS24yDx4aHixMhTZH2QsuFGrQVPEazkeK8R+p14oW28kK3146Gtbg==
 
+"@vitejs/plugin-basic-ssl@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-basic-ssl/-/plugin-basic-ssl-0.1.2.tgz#7177f9adc5384f1377b9b91b17ce7cdb8f422abd"
+  integrity sha512-EdwCHnbkakR6YPupySZm1WoCDRPaw9c5jObAo2pCRv8Ja2TESFC6Sc8RUOcKuihfjARDfszbBf+YEQwHY9s9wg==
+
 "@vitejs/plugin-vue@^3.0.3":
   version "3.0.3"
   resolved "https://registry.npmmirror.com/@vitejs/plugin-vue/-/plugin-vue-3.0.3.tgz#7e3e401ccb30b4380d2279d9849281413f1791ef"
@@ -637,6 +642,11 @@ readdirp@~3.6.0:
   integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
+
+recorder-core@^1.2.22080700:
+  version "1.2.22080700"
+  resolved "https://registry.yarnpkg.com/recorder-core/-/recorder-core-1.2.22080700.tgz#414ec7605c84acaf00b853772d0bffc3755d394e"
+  integrity sha512-A7VfuVBbOCJpvo+YmEc/Sshw4nDTmfAg1beL9P+vlCYHnECfZeaa07tFADT++z6VtdYCuu0un6DGl1uZQnzamg==
 
 resolve@^1.22.1:
   version "1.22.1"

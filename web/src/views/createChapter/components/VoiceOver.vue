@@ -23,9 +23,9 @@ const props = defineProps<{
         max-width: 70%;
         margin: 0 auto;
         position: relative;
-        padding: 4px;
-        background-color: rgba(#c0c0c0, .4);
-        color: #c0c0c0;
+        padding: 4px 10px;
+        background-color: #f0f0f0;
+        border-radius: 8px;
     }
 }
 </style>
