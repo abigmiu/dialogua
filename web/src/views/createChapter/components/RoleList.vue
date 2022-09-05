@@ -28,16 +28,24 @@ import RoleItem from './RoleItem.vue';
 import { Down as DownIcon } from '@icon-park/vue-next';
 
 import { useRoleStore } from '@/store/role'
+import { useDialogStore } from '@/store/dialog'
 import { roles } from '@/constant/index'
 
 const roleStore = useRoleStore()
+const dialogStore = useDialogStore()
+
 const { activeRoleId, roleList }  = storeToRefs(roleStore)
+const { currentAction } = storeToRefs(dialogStore)
+
 const onChangeRole = (id: number) => {
+    // 编辑状态不允许改变角色
+    if (currentAction.value === 'edit') return
     roleStore.changeActiveRoleId(id);
 }
 const initRoles = () => {
     roleStore.changeRoleList(roles);
 }
+
 // TODO:
 const onSettingRole = () => {
     console.log('onSettingRole');

@@ -40,7 +40,9 @@
                 <pencil-icon
                     theme="outline"
                     size="12"
-                    fill="#333"
+                    :fill="
+                        activeDialogId === source.renderId ? '#00aff3' : '#333'
+                    "
                     class="pencil"
                 />
             </template>
@@ -57,11 +59,14 @@ import {
     DeleteOne,
 } from '@icon-park/vue-next';
 import { Dialog, Popover } from 'vant';
-import bus from '@/utils/eventBus';
 
 import type { IDialog, IEditAction } from '@/types/Dialog';
 import { useDialogStore } from '@/store/dialog';
+import { useRoleStore } from '@/store/role';
+import { storeToRefs } from 'pinia';
 const dialogStore = useDialogStore();
+const roleStore = useRoleStore();
+const { activeDialogId } = storeToRefs(dialogStore);
 
 const props = defineProps<{
     source: IDialog;
@@ -75,6 +80,7 @@ const iconRef = ref<HTMLElement>();
  * 图片没加载完不知道宽度
  */
 const onHandlePosition = () => {
+    dialogStore.$state.activeDialogId = props.source.renderId;
     if (!iconRef.value) return;
 
     const { top, left, right, bottom } = iconRef.value.getBoundingClientRect();
@@ -106,7 +112,6 @@ const onHandlePosition = () => {
 };
 
 const onSelect = (actions: IEditAction) => {
-    dialogStore.$state.activeDialogId = props.source.renderId;
     switch (actions) {
         case 'delete':
             onDelete();
@@ -123,17 +128,21 @@ const onSelect = (actions: IEditAction) => {
         default:
             break;
     }
-    dialogStore.handleAction();
+    // 这里点击后不自动收回，原因不知， 手动处理下
+    showPopover.value = false;
 };
 const onDelete = () => {
     Dialog.confirm({
         message: '确定删除这条内容吗？',
     }).then(() => {
         dialogStore.$state.currentAction = 'delete';
-    })
+        dialogStore.$state.activeDialogId = props.source.renderId;
+        dialogStore.handleAction();
+    });
 };
 const onEdit = () => {
     dialogStore.$state.currentAction = 'edit';
+    roleStore.changeActiveRoleId(props.source.roleId);
 };
 const onUpInsert = () => {
     dialogStore.$state.currentAction = 'upInsert';

@@ -55,18 +55,46 @@ export const useDialogStore = defineStore('dialog', {
                 roleName: role.name,
                 roleAvatar: role.avatar,
                 side: role.side,
-                type: role.type,
             };
+
+            const type = role.id === 0 ? 'voiceover' : 'text';
+
             switch (actionType) {
                 case 'insert':
                     this.insert({
                         content: this.$state.currentContent,
                         renderId: uuid(),
                         ...roleData,
+                        type,
                     });
                     break;
                 case 'delete':
                     this.deleteDialog();
+                    break;
+                case 'upInsert':
+                    this.insertBefore({
+                        content: this.$state.currentContent,
+                        renderId: uuid(),
+                        ...roleData,
+                        type,
+                    });
+                    break;
+                case 'downInsert':
+                    this.insertAfter({
+                        content: this.$state.currentContent,
+                        renderId: uuid(),
+                        ...roleData,
+                        type,
+                    });
+                    break;
+                case 'edit':
+                    this.edit({
+                        content: this.$state.currentContent,
+                        renderId: this.$state.activeDialogId,
+                        ...roleData,
+                        type,
+                    })
+                    break;
                 default:
                     break;
             }
@@ -82,15 +110,25 @@ export const useDialogStore = defineStore('dialog', {
             this.$state.dialogList.push(data);
             this.$state.currentContent = '';
         },
-        insertBefore(renderId: string, data: IDialog) {
+        insertBefore(data: IDialog) {
             const index = this.findRenderId();
             if (index === -1) return;
             this.$state.dialogList.splice(index, 0, data);
+            this.$state.currentContent = '';
         },
-        insertAfter(renderId: string, data: IDialog) {
+        insertAfter(data: IDialog) {
             const index = this.findRenderId();
             if (index === -1) return;
             this.$state.dialogList.splice(index + 1, 0, data);
+            this.$state.currentContent = '';
+        },
+        edit(data: IDialog) {
+            const index = this.findRenderId();
+            if (index !== -1) {
+                this.$state.dialogList.splice(index, 1, data);
+            }
+            this.$state.currentContent = '';
+            this.$state.currentAction = 'insert';
         },
     },
 });

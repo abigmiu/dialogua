@@ -25,6 +25,18 @@
         </div>
 
         <div class="footer">
+            <div
+                class="insert-panel"
+                v-if="isModify"
+            >
+                {{ modifyText }}
+                <close-small
+                    theme="outline"
+                    fill="#333"
+                    class="panel-close"
+                    @click="onCloseAction"
+                />
+            </div>
             <content-input></content-input>
             <role-list></role-list>
         </div>
@@ -40,23 +52,24 @@ import { IDialog } from '@/types/Dialog';
 import { IRole } from '@/types/Role';
 import bus from '@/utils/eventBus';
 import { useDialogStore } from '@/store/dialog';
+import { storeToRefs } from 'pinia';
 
 const dialogStore = useDialogStore();
+const { currentAction } = storeToRefs(dialogStore);
 const dataList = computed((): IDialog[] => dialogStore.$state.dialogList);
 
-// eventBus 处理
-const handleEdit = (id: number) => {
-
-};
-const handleDelete = (id: number) => {
-
-};
-bus.on('edit', handleEdit);
-bus.on('delete', handleDelete);
-
-onBeforeUnmount(() => {
-    bus.off('edit');
+/** 编辑，插入处理 */
+const modifyAction = ['edit', 'upInsert', 'downInsert'];
+const isModify = computed(() => modifyAction.includes(currentAction.value));
+const modifyText = computed(() => {
+    if (currentAction.value === 'edit') return '修改';
+    if (currentAction.value === 'upInsert') return '上插';
+    if (currentAction.value === 'downInsert') return '下插';
+    return '';
 });
+const onCloseAction = () => {
+    dialogStore.$state.currentAction = 'insert';
+};
 </script>
 <style lang="scss" scoped>
 .info {
@@ -91,6 +104,21 @@ onBeforeUnmount(() => {
         padding: 10px 20px;
         border-top-left-radius: 16px;
         border-top-right-radius: 16px;
+    }
+}
+
+.insert-panel {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 500;
+    font-size: 16px;
+    word-spacing: 5px;
+    position: relative;
+    .panel-close {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
     }
 }
 </style>
