@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@icon-park/vue-next": "^1.4.2",
+    "mitt": "^3.0.0",
+    "pinia": "^2.0.21",
     "recorder-core": "^1.2.22080700",
     "vant": "^3.6.1",
     "vue": "^3.2.37",

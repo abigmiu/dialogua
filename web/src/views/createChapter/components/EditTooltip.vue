@@ -27,13 +27,13 @@
                     <div>
                         <double-up theme="outline" size="16" fill="#fff" />
                     </div>
-                    <div>双上</div>
+                    <div>上插</div>
                 </div>
                 <div class="action-item" @click="onSelect('downInsert')">
                     <div>
                         <double-down theme="outline" size="16" fill="#fff" />
                     </div>
-                    <div>双下</div>
+                    <div>下插</div>
                 </div>
             </div>
             <template #reference>
@@ -57,6 +57,7 @@ import {
     DeleteOne,
 } from '@icon-park/vue-next';
 import { Dialog, Popover } from 'vant';
+import bus from '@/utils/eventBus';
 
 import type { IDialog, IEditAction } from '@/types/Dialog';
 
@@ -120,9 +121,13 @@ const onSelect = (actions: IEditAction) => {
 const onDelete = () => {
     Dialog.confirm({
         message: '确定删除这条内容吗？',
-    }).then(() => {});
+    }).then(() => {
+        bus.emit('delete', props.source.id);
+    });
 };
-const onEdit = () => {};
+const onEdit = () => {
+    bus.emit('edit', props.source.id);
+};
 const onUpInsert = () => {};
 const onDownInsert = () => {};
 </script>

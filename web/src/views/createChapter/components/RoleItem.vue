@@ -9,14 +9,13 @@ import { IRole } from '@/types/Role';
 
 const props = defineProps<{
     source: IRole;
-    index: number;
 }>();
 const emits = defineEmits<{
-    (e: 'changeRole', index: number): void;
+    (e: 'changeRole', id: number): void;
 }>();
 
 const onChangeRole = () => {
-    emits('changeRole', props.index);
+    emits('changeRole', props.source.id);
 };
 </script>
 <style lang="scss" scoped>

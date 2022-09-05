@@ -3,15 +3,14 @@
         <div class="role-list">
             <setting-role></setting-role>
             <voice-over
-                @click="onChangeRole(-1)"
-                :class="{ active: activeIndex === -1 }"
+                @click="onChangeRole(0)"
+                :class="{ active: activeRoleId === 0 }"
             ></voice-over>
             <role-item
-                v-for="(item, index) in roles"
+                v-for="item in roleList"
                 :key="item.id"
                 :source="item"
-                :index="index"
-                :class="{ active: activeIndex === index }"
+                :class="{ active: activeRoleId === item.id }"
                 @changeRole="onChangeRole"
             ></role-item>
         </div>
@@ -22,32 +21,25 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import VoiceOver from './VoiceOverRole.vue';
 import SettingRole from './SettingRole.vue';
 import RoleItem from './RoleItem.vue';
 import { Down as DownIcon } from '@icon-park/vue-next';
 
-import { roles } from '@/constant/index';
-import { IRole } from '@/types/Role';
+import { useRoleStore } from '@/store/role'
+import { roles } from '@/constant/index'
 
-const emits = defineEmits<{
-    (e: 'changeRole', role: IRole): void;
-}>();
+const roleStore = useRoleStore()
+const { activeRoleId, roleList }  = storeToRefs(roleStore)
+const onChangeRole = (id: number) => {
+    roleStore.changeActiveRoleId(id);
+}
+const initRoles = () => {
+    roleStore.changeRoleList(roles);
+}
 
-let activeIndex = ref(-1);
-
-const onChangeRole = (index: number) => {
-    activeIndex.value = index;
-    if (index === -1) {
-        return emits('changeRole', {
-            id: 0,
-            name: '旁白',
-            avatar: '',
-            side: 'voiceover',
-        });
-    }
-    emits('changeRole', roles[index]);
-};
+initRoles()
 </script>
 <style lang="scss" scoped>
 .role-list {

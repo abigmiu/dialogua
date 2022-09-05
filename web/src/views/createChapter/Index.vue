@@ -29,21 +29,30 @@
                 v-model="currentValue.content"
                 @confirm="onConfirm"
             ></content-input>
-            <role-list @changeRole="onChangeRole"></role-list>
+            <role-list
+                @changeRole="onChangeRole"
+                :activeIndex="activeIndex"
+                :roles="roleList.arr"
+            ></role-list>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { onBeforeMount, onBeforeUnmount, reactive, ref } from 'vue';
 import { More as MoreIcon, CloseSmall } from '@icon-park/vue-next';
 import DialogItem from './components/DialogItem.vue';
 import ContentInput from './components/ContentInput.vue';
 import RoleList from './components/RoleList.vue';
 import { IDialog } from '@/types/Dialog';
 import { IRole } from '@/types/Role';
+import bus from '@/utils/eventBus';
+import { roles } from '@/constant/index';
 
+const roleList = reactive({
+    arr: roles as IRole[],
+});
 const dataList = ref<IDialog[]>([]);
-
+const activeIndex = ref(-1);
 const currentValue = reactive<IDialog>({
     content: '',
     roleId: 0,
@@ -53,27 +62,60 @@ const currentValue = reactive<IDialog>({
     roleAvatar: '',
 });
 
-const onChangeRole = (role: IRole) => {
-    if (role.id === 0) {
+const onChangeRole = (index: number) => {
+    if (index === -1) {
+        // 旁白
         currentValue.roleId = 0;
         currentValue.roleName = '';
         currentValue.roleAvatar = '';
         currentValue.type = 'voiceover';
     } else {
+        const role = roleList.arr[index];
         currentValue.roleId = role.id;
         currentValue.roleName = role.name;
         currentValue.roleAvatar = role.avatar;
         currentValue.type = 'text';
         currentValue.side = role.side;
     }
+    activeIndex.value = index;
 };
 
 const onConfirm = () => {
     dataList.value.push({
         ...currentValue,
     });
-    currentValue.content = ''
+    currentValue.content = '';
 };
+
+// eventBus 处理
+const handleEdit = (id: number) => {
+    const index = dataList.value.findIndex((item) => item.id === id);
+    if (index === -1) return;
+    const value = dataList.value[index];
+    currentValue.content = value.content;
+    currentValue.roleId = value.roleId;
+    currentValue.roleName = value.roleName;
+    currentValue.roleAvatar = value.roleAvatar;
+    currentValue.id = value.id;
+    currentValue.side = value.side;
+
+    const roleIndex = roleList.arr.findIndex((item) => item.id === id);
+    if (roleIndex === -1) return
+    activeIndex.value = roleIndex
+};
+const handleDelete = (id: number) => {
+    const index = dataList.value.findIndex((item) => item.id === id);
+    console.log(index);
+    if (index !== -1) {
+        dataList.value.splice(index, 1);
+    }
+};
+bus.on('edit', handleEdit);
+bus.on('delete', handleDelete);
+
+onBeforeUnmount(() => {
+    bus.off('edit');
+});
 </script>
 <style lang="scss" scoped>
 .info {
