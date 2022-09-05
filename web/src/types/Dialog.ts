@@ -1,12 +1,15 @@
 /** 对话框内容 */
 export interface IDialog {
+    /** 从角色中获取的 */
     roleId: number;
     roleName: string;
     roleAvatar: string;
-    id: number;
     type: 'text' | 'voiceover';
-    content: string;
     side?: 'left' | 'right';
+    /** 非角色决定 */
+    id?: number;
+    renderId: string;
+    content: string;
 }
 
 

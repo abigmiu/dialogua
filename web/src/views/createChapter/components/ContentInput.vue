@@ -4,8 +4,7 @@
             <div class="text-input">
                 <van-field
                     class="text-inner"
-                    :modelValue="modelValue"
-                    @update:model-value="onInput"
+                    v-model="currentContent"
                     rows="1"
                     :autosize="{
                         maxHeight: 64,
@@ -22,20 +21,21 @@
 </template>
 <script lang="ts" setup>
 import { Send as SendIcon } from '@icon-park/vue-next';
+import { Toast } from 'vant';
+import { ref } from 'vue';
 
-const props = defineProps<{
-    modelValue: string;
-}>();
-const emits = defineEmits<{
-    (e: 'update:modelValue', value: string): void;
-    (e: 'confirm'): void;
-}>();
+import { useDialogStore } from '@/store/dialog';
+import { storeToRefs } from 'pinia';
+const dialogStore = useDialogStore();
+const { currentAction, currentContent } = storeToRefs(dialogStore)
 
-const onInput = (value: string) => {
-    emits('update:modelValue', value);
-};
+const content = ref('');
 const onConfirm = () => {
-    emits('confirm');
+    if (!currentContent.value.trimStart().length) {
+        return Toast('未输入内容');
+    }
+
+    dialogStore.handleAction();
 };
 </script>
 <style lang="scss" scoped>

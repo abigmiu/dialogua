@@ -1,7 +1,7 @@
 <template>
     <div class="relative role-list-wrapper">
         <div class="role-list">
-            <setting-role></setting-role>
+            <setting-role @click="onSettingRole"></setting-role>
             <voice-over
                 @click="onChangeRole(0)"
                 :class="{ active: activeRoleId === 0 }"
@@ -38,6 +38,11 @@ const onChangeRole = (id: number) => {
 const initRoles = () => {
     roleStore.changeRoleList(roles);
 }
+// TODO:
+const onSettingRole = () => {
+    console.log('onSettingRole');
+}
+
 
 initRoles()
 </script>

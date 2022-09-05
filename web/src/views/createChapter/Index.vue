@@ -18,27 +18,20 @@
                 <dialog-item
                     class="mt-4 mb-4"
                     v-for="item in dataList"
-                    :key="item.id"
+                    :key="item.renderId"
                     :source="item"
                 ></dialog-item>
             </div>
         </div>
 
         <div class="footer">
-            <content-input
-                v-model="currentValue.content"
-                @confirm="onConfirm"
-            ></content-input>
-            <role-list
-                @changeRole="onChangeRole"
-                :activeIndex="activeIndex"
-                :roles="roleList.arr"
-            ></role-list>
+            <content-input></content-input>
+            <role-list></role-list>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
-import { onBeforeMount, onBeforeUnmount, reactive, ref } from 'vue';
+import { computed, onBeforeMount, onBeforeUnmount, reactive, ref } from 'vue';
 import { More as MoreIcon, CloseSmall } from '@icon-park/vue-next';
 import DialogItem from './components/DialogItem.vue';
 import ContentInput from './components/ContentInput.vue';
@@ -46,69 +39,17 @@ import RoleList from './components/RoleList.vue';
 import { IDialog } from '@/types/Dialog';
 import { IRole } from '@/types/Role';
 import bus from '@/utils/eventBus';
-import { roles } from '@/constant/index';
+import { useDialogStore } from '@/store/dialog';
 
-const roleList = reactive({
-    arr: roles as IRole[],
-});
-const dataList = ref<IDialog[]>([]);
-const activeIndex = ref(-1);
-const currentValue = reactive<IDialog>({
-    content: '',
-    roleId: 0,
-    id: 0,
-    type: 'voiceover',
-    roleName: '',
-    roleAvatar: '',
-});
-
-const onChangeRole = (index: number) => {
-    if (index === -1) {
-        // 旁白
-        currentValue.roleId = 0;
-        currentValue.roleName = '';
-        currentValue.roleAvatar = '';
-        currentValue.type = 'voiceover';
-    } else {
-        const role = roleList.arr[index];
-        currentValue.roleId = role.id;
-        currentValue.roleName = role.name;
-        currentValue.roleAvatar = role.avatar;
-        currentValue.type = 'text';
-        currentValue.side = role.side;
-    }
-    activeIndex.value = index;
-};
-
-const onConfirm = () => {
-    dataList.value.push({
-        ...currentValue,
-    });
-    currentValue.content = '';
-};
+const dialogStore = useDialogStore();
+const dataList = computed((): IDialog[] => dialogStore.$state.dialogList);
 
 // eventBus 处理
 const handleEdit = (id: number) => {
-    const index = dataList.value.findIndex((item) => item.id === id);
-    if (index === -1) return;
-    const value = dataList.value[index];
-    currentValue.content = value.content;
-    currentValue.roleId = value.roleId;
-    currentValue.roleName = value.roleName;
-    currentValue.roleAvatar = value.roleAvatar;
-    currentValue.id = value.id;
-    currentValue.side = value.side;
 
-    const roleIndex = roleList.arr.findIndex((item) => item.id === id);
-    if (roleIndex === -1) return
-    activeIndex.value = roleIndex
 };
 const handleDelete = (id: number) => {
-    const index = dataList.value.findIndex((item) => item.id === id);
-    console.log(index);
-    if (index !== -1) {
-        dataList.value.splice(index, 1);
-    }
+
 };
 bus.on('edit', handleEdit);
 bus.on('delete', handleDelete);

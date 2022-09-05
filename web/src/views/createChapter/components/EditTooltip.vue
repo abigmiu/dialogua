@@ -1,6 +1,6 @@
 <!-- 对话框编辑菜单 -->
 <template>
-    <div class="editor-wrapper" @click="onOpened" ref="iconRef">
+    <div class="editor-wrapper" @click="onHandlePosition" ref="iconRef">
         <van-popover
             v-model:show="showPopover"
             theme="dark"
@@ -60,6 +60,8 @@ import { Dialog, Popover } from 'vant';
 import bus from '@/utils/eventBus';
 
 import type { IDialog, IEditAction } from '@/types/Dialog';
+import { useDialogStore } from '@/store/dialog';
+const dialogStore = useDialogStore();
 
 const props = defineProps<{
     source: IDialog;
@@ -68,7 +70,11 @@ const showPopover = ref(false);
 const placement = ref('bottom');
 
 const iconRef = ref<HTMLElement>();
-const onOpened = () => {
+/** 处理 toolTip 位置 */
+/** 不在 mounted 的时候处理是考虑后续可能有图片存在的情况
+ * 图片没加载完不知道宽度
+ */
+const onHandlePosition = () => {
     if (!iconRef.value) return;
 
     const { top, left, right, bottom } = iconRef.value.getBoundingClientRect();
@@ -94,13 +100,13 @@ const onOpened = () => {
             placement.value = 'top-start';
         }
     }
-    console.log(top, left, right, bottom);
     if (right <= 10) {
         placement.value = 'bottom-start';
     }
 };
 
 const onSelect = (actions: IEditAction) => {
+    dialogStore.$state.activeDialogId = props.source.renderId;
     switch (actions) {
         case 'delete':
             onDelete();
@@ -117,19 +123,24 @@ const onSelect = (actions: IEditAction) => {
         default:
             break;
     }
+    dialogStore.handleAction();
 };
 const onDelete = () => {
     Dialog.confirm({
         message: '确定删除这条内容吗？',
     }).then(() => {
-        bus.emit('delete', props.source.id);
-    });
+        dialogStore.$state.currentAction = 'delete';
+    })
 };
 const onEdit = () => {
-    bus.emit('edit', props.source.id);
+    dialogStore.$state.currentAction = 'edit';
 };
-const onUpInsert = () => {};
-const onDownInsert = () => {};
+const onUpInsert = () => {
+    dialogStore.$state.currentAction = 'upInsert';
+};
+const onDownInsert = () => {
+    dialogStore.$state.currentAction = 'downInsert';
+};
 </script>
 <style lang="scss" scoped>
 .editor-wrapper {

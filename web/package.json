@@ -13,11 +13,13 @@
     "mitt": "^3.0.0",
     "pinia": "^2.0.21",
     "recorder-core": "^1.2.22080700",
+    "uuid": "^8.3.2",
     "vant": "^3.6.1",
     "vue": "^3.2.37",
     "vue-router": "4"
   },
   "devDependencies": {
+    "@types/uuid": "^8.3.4",
     "@vitejs/plugin-basic-ssl": "^0.1.2",
     "@vitejs/plugin-vue": "^3.0.3",
     "prettier": "^2.7.1",
