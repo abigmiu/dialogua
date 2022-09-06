@@ -19,6 +19,7 @@ export class UserEntity extends CustomBaseEntity {
 
     @Column({
         length: 200,
+        default: '',
     })
     avatar: string;
 

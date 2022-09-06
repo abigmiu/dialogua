@@ -1,11 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from 'src/db/user.entity';
+import { CreateUserDto } from 'src/dto/user.dto';
+import { badReq, SAME_EMAIL } from 'src/expection';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-    create(createUserDto: CreateUserDto) {
-        return 'This action adds a new user';
+    constructor(
+        @InjectRepository(UserEntity)
+        private readonly userRepo: Repository<UserEntity>,
+    ) {}
+
+    /** 注册用户 */
+    async create(createUserDto: CreateUserDto) {
+        const storeRes = await this.userRepo.findOne({
+            where: {
+                email: createUserDto.email,
+            },
+        });
+        if (storeRes) return badReq(SAME_EMAIL);
+
+        const user = new UserEntity();
+        user.nickname = createUserDto.nickname;
+        user.password = createUserDto.password;
+        user.email = createUserDto.email;
+
+        await this.userRepo.save(user);
     }
 
     findAll() {
@@ -16,7 +37,7 @@ export class UserService {
         return `This action returns a #${id} user`;
     }
 
-    update(id: number, updateUserDto: UpdateUserDto) {
+    update(id: number, updateUserDto) {
         return `This action updates a #${id} user`;
     }
 

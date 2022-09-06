@@ -2,9 +2,17 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from './pipe/validate.pipe';
+import { TransformInterceptor } from './interceptor/transform.interceptor';
+import { GlobalExceptionFilter } from './filter/otherException.filter';
+import { HttpExceptionFilter } from './filter/httpException.filter';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalInterceptors(new TransformInterceptor());
+    app.useGlobalFilters(new GlobalExceptionFilter(), new HttpExceptionFilter());
 
     const config = app.get(ConfigService);
     app.setGlobalPrefix(config.get('prefix'));

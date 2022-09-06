@@ -1,14 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/dto/user.dto';
 
 @ApiTags('用户')
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
+    @ApiOperation({
+        summary: '注册',
+    })
     @Post()
     create(@Body() createUserDto: CreateUserDto) {
         return this.userService.create(createUserDto);
@@ -25,7 +27,7 @@ export class UserController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    update(@Param('id') id: string, @Body() updateUserDto) {
         return this.userService.update(+id, updateUserDto);
     }
 
