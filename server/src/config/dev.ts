@@ -20,4 +20,5 @@ export default {
     enableSwagger: true,
     port: 3008,
     prefix: '/api',
+    jwtSecret: '123456',
 };

@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RoleEntity } from 'src/db/role.entity';
 import { UserEntity } from 'src/db/user.entity';
 import { CreateUserDto } from 'src/dto/user.dto';
 import { badReq, SAME_EMAIL } from 'src/expection';
+import { IJwtData } from 'src/types/user';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -10,7 +13,13 @@ export class UserService {
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepo: Repository<UserEntity>,
+        private jwtService: JwtService,
     ) {}
+
+    /** 生成 token */
+    createToken(data: IJwtData) {
+        return this.jwtService.sign(data);
+    }
 
     /** 注册用户 */
     async create(createUserDto: CreateUserDto) {
@@ -26,7 +35,16 @@ export class UserService {
         user.password = createUserDto.password;
         user.email = createUserDto.email;
 
-        await this.userRepo.save(user);
+        const role = new RoleEntity();
+        role.id = 1;
+        user.role = role;
+
+        const res = await this.userRepo.save(user);
+        const data: IJwtData = {
+            userId: res.id,
+            roleId: res.role.id,
+        };
+        return this.createToken(data);
     }
 
     findAll() {

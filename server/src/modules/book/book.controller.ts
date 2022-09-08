@@ -1,5 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateBookDto } from 'src/dto/book.dto';
 import { BookService } from './book.service';
 
@@ -11,6 +12,8 @@ export class BookController {
     @ApiOperation({
         summary: '创建',
     })
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @Post()
     create(@Body() body: CreateBookDto) {
         return this.bookService.create(body);

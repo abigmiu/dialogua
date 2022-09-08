@@ -1,6 +1,7 @@
 import { CustomBaseEntity } from 'src/common/base.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BookEntity } from './book.entity';
+import { RoleEntity } from './role.entity';
 
 /** 用户 */
 @Entity({
@@ -35,4 +36,7 @@ export class UserEntity extends CustomBaseEntity {
 
     @OneToMany(() => BookEntity, (book) => book.user)
     books: BookEntity[];
+
+    @ManyToOne(() => RoleEntity, (role) => role.users)
+    role: RoleEntity;
 }

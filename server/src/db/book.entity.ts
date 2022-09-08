@@ -20,6 +20,7 @@ export class BookEntity extends CustomBaseEntity {
     cover: string;
 
     @Column({
+        default: '',
         length: 500,
     })
     intro: string;

@@ -5,6 +5,7 @@ import { IsIncludeBlank } from 'src/decorator/validate';
 export class CreateUserDto {
     @ApiProperty({
         description: '邮箱',
+        default: 'test@email.com',
     })
     @IsEmail(
         {},

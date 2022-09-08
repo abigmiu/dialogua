@@ -6,10 +6,12 @@ import { ValidationPipe } from './pipe/validate.pipe';
 import { TransformInterceptor } from './interceptor/transform.interceptor';
 import { GlobalExceptionFilter } from './filter/otherException.filter';
 import { HttpExceptionFilter } from './filter/httpException.filter';
+import { logger } from './middleware/logger.middleware';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
+    app.use(logger);
     app.useGlobalPipes(new ValidationPipe());
     app.useGlobalInterceptors(new TransformInterceptor());
     app.useGlobalFilters(new GlobalExceptionFilter(), new HttpExceptionFilter());
@@ -18,7 +20,11 @@ async function bootstrap() {
     app.setGlobalPrefix(config.get('prefix'));
     const enableSwagger = config.get('enableSwagger');
     if (enableSwagger) {
-        const options = new DocumentBuilder().setTitle('dialogua api').setVersion('1.0').build();
+        const options = new DocumentBuilder()
+            .setTitle('dialogua api')
+            .setVersion('1.0')
+            .addBearerAuth()
+            .build();
         const document = SwaggerModule.createDocument(app, options);
         SwaggerModule.setup(`${config.get('prefix')}-doc`, app, document);
     }

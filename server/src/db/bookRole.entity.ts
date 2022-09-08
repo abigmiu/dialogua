@@ -13,8 +13,14 @@ export class BookRoleEntity extends CustomBaseEntity {
 
     @Column({
         type: 'tinyint',
+        nullable: true,
     })
-    side: number;
+    side?: number;
+
+    @Column({
+        type: 'tinyint',
+    })
+    type: number;
 
     @Column({
         length: 200,
