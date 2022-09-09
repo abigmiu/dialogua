@@ -1,6 +1,8 @@
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import Redis from 'ioredis';
 import { RoleEntity } from 'src/db/role.entity';
 import { UserEntity } from 'src/db/user.entity';
 import { CreateUserDto } from 'src/dto/user.dto';
@@ -13,12 +15,16 @@ export class UserService {
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepo: Repository<UserEntity>,
+        @InjectRedis()
+        private readonly redis: Redis,
         private jwtService: JwtService,
     ) {}
 
     /** 生成 token */
     createToken(data: IJwtData) {
-        return this.jwtService.sign(data);
+        const token = this.jwtService.sign(data);
+        this.redis.hset('dialogua:token', token, 1);
+        return token;
     }
 
     /** 注册用户 */

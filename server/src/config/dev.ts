@@ -21,4 +21,8 @@ export default {
     port: 3008,
     prefix: '/api',
     jwtSecret: '123456',
+    redis: {
+        host: 'localhost',
+        port: 6379,
+    },
 };
