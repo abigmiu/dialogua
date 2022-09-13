@@ -1,7 +1,8 @@
 import { CustomBaseEntity } from 'src/common/base.entity';
 import { ISection } from 'src/types/section';
-import { Column, Entity, ManyToMany, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 import { BookEntity } from './book.entity';
+import { SectionEntity } from './section.entity';
 
 @Entity({
     name: 'chapter',
@@ -13,13 +14,16 @@ export class ChapterEntity extends CustomBaseEntity {
     title: string;
 
     @Column({
-        type: 'json',
+        type: 'simple-array',
     })
-    content: ISection[];
+    content: number[];
 
     @Column()
     text_count: number;
 
     @ManyToOne(() => BookEntity, (book) => book.chapters)
     book: BookEntity;
+
+    @OneToMany(() => SectionEntity, (section) => section.chapter)
+    sections: SectionEntity[];
 }

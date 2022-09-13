@@ -36,7 +36,7 @@ export class ChapterService {
             textCount += item.content.trim().length;
         });
 
-        chapter.content = body.content;
+        chapter.content = [];
         chapter.title = body.title;
         chapter.text_count = textCount;
 

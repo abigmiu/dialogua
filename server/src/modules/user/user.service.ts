@@ -5,8 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Redis from 'ioredis';
 import { RoleEntity } from 'src/db/role.entity';
 import { UserEntity } from 'src/db/user.entity';
-import { CreateUserDto } from 'src/dto/user.dto';
-import { badReq, SAME_EMAIL } from 'src/expection';
+import { CreateUserDto, LoginDto } from 'src/dto/user.dto';
+import { badReq, NO_USER, PASSWORD_ERROR, SAME_EMAIL } from 'src/expection';
 import { IJwtData } from 'src/types/user';
 import { Repository } from 'typeorm';
 
@@ -51,6 +51,40 @@ export class UserService {
             roleId: res.role.id,
         };
         return this.createToken(data);
+    }
+
+    async login(dto: LoginDto) {
+        const user = await this.userRepo.findOne({
+            where: {
+                email: dto.email,
+                del: false,
+            },
+            relations: ['role'],
+        });
+
+        if (!user) return badReq(NO_USER);
+
+        const password = user.password;
+        if (password !== dto.password) return badReq(PASSWORD_ERROR);
+
+        const role = user.role;
+        const data: IJwtData = {
+            roleId: role.id,
+            userId: user.id,
+        };
+
+        const token = this.createToken(data);
+        const retData = {
+            ...user,
+            token,
+        };
+        delete retData.del;
+        delete retData.books;
+        delete retData.role;
+        delete retData.password;
+        delete retData.status;
+
+        return retData;
     }
 
     findAll() {

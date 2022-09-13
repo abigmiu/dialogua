@@ -13,8 +13,8 @@ async function bootstrap() {
 
     app.use(logger);
     app.useGlobalPipes(new ValidationPipe());
-    app.useGlobalInterceptors(new TransformInterceptor());
     app.useGlobalFilters(new GlobalExceptionFilter(), new HttpExceptionFilter());
+    app.useGlobalInterceptors(new TransformInterceptor());
 
     const config = app.get(ConfigService);
     app.setGlobalPrefix(config.get('prefix'));

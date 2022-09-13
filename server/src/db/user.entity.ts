@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { CustomBaseEntity } from 'src/common/base.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BookEntity } from './book.entity';
@@ -13,9 +14,8 @@ export class UserEntity extends CustomBaseEntity {
     })
     email: string;
 
-    @Column({
-        select: false,
-    })
+    @Exclude()
+    @Column()
     password: string;
 
     @Column({
@@ -29,6 +29,7 @@ export class UserEntity extends CustomBaseEntity {
     })
     nickname: string;
 
+    @Exclude()
     @Column({
         default: 0,
     })
@@ -37,6 +38,7 @@ export class UserEntity extends CustomBaseEntity {
     @OneToMany(() => BookEntity, (book) => book.user)
     books: BookEntity[];
 
+    @Exclude()
     @ManyToOne(() => RoleEntity, (role) => role.users)
     role: RoleEntity;
 }

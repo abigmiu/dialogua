@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ExtractJwt } from 'passport-jwt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class RbacAuthGuard extends AuthGuard('jwt') {
@@ -14,10 +15,13 @@ export class RbacAuthGuard extends AuthGuard('jwt') {
         @InjectRedis() private readonly redis: Redis,
         private jwtService: JwtService,
         private configService: ConfigService,
+        private reflector: Reflector,
     ) {
         super();
     }
     async canActivate(context: ExecutionContext): Promise<boolean> {
+        const isPublic = this.reflector.get<boolean>('isPublic', context.getHandler());
+        if (isPublic) return true;
         const request = context.switchToHttp().getRequest();
         const user = request.user as IJwtData;
         const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);

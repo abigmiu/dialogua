@@ -42,3 +42,18 @@ export class CreateUserDto {
     })
     nickname: string;
 }
+
+export class LoginDto {
+    @ApiProperty({
+        description: '邮箱',
+        default: 'test2@email.com',
+    })
+    @IsEmail()
+    email: string;
+
+    @ApiProperty({
+        description: '密码',
+        default: 'string',
+    })
+    password: string;
+}

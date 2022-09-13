@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Column, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export class CustomBaseEntity {
@@ -14,6 +15,7 @@ export class CustomBaseEntity {
     })
     update_at: Date;
 
+    @Exclude()
     @Column({
         default: false,
         select: false,
