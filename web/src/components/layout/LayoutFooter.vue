@@ -12,6 +12,6 @@
     bottom: 20px;
     padding: 10px 20px;
     border-radius: 16px;
-    background-color: black;
+    background-color: #ffffff;
 }
 </style>

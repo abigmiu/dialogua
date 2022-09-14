@@ -9,7 +9,6 @@ import {
 @ValidatorConstraint()
 class IsIncludeBlankConstraint implements ValidatorConstraintInterface {
     validate(value: any, args: ValidationArguments) {
-        console.log(/\s+/.test(value));
         if (typeof value === 'string') {
             return !/\s+/.test(value);
         }

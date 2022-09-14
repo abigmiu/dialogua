@@ -6,12 +6,10 @@ import { ValidationPipe } from './pipe/validate.pipe';
 import { TransformInterceptor } from './interceptor/transform.interceptor';
 import { GlobalExceptionFilter } from './filter/otherException.filter';
 import { HttpExceptionFilter } from './filter/httpException.filter';
-import { logger } from './middleware/logger.middleware';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-    app.use(logger);
     app.useGlobalPipes(new ValidationPipe());
     app.useGlobalFilters(new GlobalExceptionFilter(), new HttpExceptionFilter());
     app.useGlobalInterceptors(new TransformInterceptor());

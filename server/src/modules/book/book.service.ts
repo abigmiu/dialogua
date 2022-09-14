@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookEntity } from 'src/db/book.entity';
-import { CreateBookDto } from 'src/dto/book.dto';
+import { BookListDto, CreateBookDto } from 'src/dto/book.dto';
 import { badReq, CREATE_FAIL, SAME_BOOK_NAME } from 'src/expection';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 
 @Injectable()
 export class BookService {
@@ -30,5 +30,35 @@ export class BookService {
         } catch {
             return badReq(CREATE_FAIL);
         }
+    }
+
+    async list(dto: BookListDto) {
+        let res;
+
+        if (dto.lastId) {
+            res = await this.bookRepo.findAndCount({
+                where: {
+                    del: false,
+                    id: LessThan(dto.lastId),
+                },
+                take: dto.size,
+                order: {
+                    id: 'DESC',
+                },
+            });
+        } else {
+            res = await this.bookRepo.findAndCount({
+                where: {
+                    del: false,
+                    id: LessThan(dto.lastId),
+                },
+                take: dto.size,
+                order: {
+                    id: 'DESC',
+                },
+            });
+        }
+
+        return res;
     }
 }
