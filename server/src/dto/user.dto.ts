@@ -25,13 +25,6 @@ export class CreateUserDto {
     password: string;
 
     @ApiProperty({
-        description: '验证码',
-    })
-    @IsIncludeBlank()
-    @IsString()
-    code: string;
-
-    @ApiProperty({
         description: '昵称',
         maxLength: 10,
     })

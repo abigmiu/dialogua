@@ -8,6 +8,14 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:3008',
+                changeOrigin: true,
+            },
+        },
+    },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'src'),
