@@ -1,5 +1,5 @@
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import Redis from 'ioredis';
 import { IJwtData } from 'src/types/user';
@@ -16,5 +16,11 @@ export class AuthService {
         const token = this.jwtService.sign(data);
         this.redis.hset('dialogua:token', token, 1);
         return token;
+    }
+
+    async validate(token?: string) {
+        if (!token) throw new UnauthorizedException();
+        const exit = await this.redis.hexists('dialogua:token', token);
+        if (!exit) throw new UnauthorizedException();
     }
 }

@@ -14,7 +14,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     validate(data: IJwtData) {
-        console.log(data);
         return data;
     }
 }
