@@ -4,7 +4,16 @@ import { BookRoleModule } from './book-role/book-role.module';
 import { ChapterModule } from './chapter/chapter.module';
 import { RoleModule } from './role/role.module';
 import { SectionModule } from './section/section.module';
+import { AuthModule } from './auth/auth.module';
 
-const modules = [UserModule, BookModule, BookRoleModule, ChapterModule, RoleModule, SectionModule];
+const modules = [
+    AuthModule,
+    UserModule,
+    BookModule,
+    BookRoleModule,
+    ChapterModule,
+    RoleModule,
+    SectionModule,
+];
 
 export default modules;

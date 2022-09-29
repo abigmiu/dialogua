@@ -1,6 +1,5 @@
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { IJwtData } from 'src/types/user';
 import Redis from 'ioredis';
 import { AuthGuard } from '@nestjs/passport';

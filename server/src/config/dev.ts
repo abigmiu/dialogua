@@ -6,7 +6,7 @@ export default {
         host: 'localhost',
         port: 3306,
         username: 'root',
-        password: '123456789',
+        password: '123456',
         database: 'dialogua',
         charset: 'utf8mb4',
         entities: [join(__dirname, '../db/**/*.entity{.js,.ts}')],

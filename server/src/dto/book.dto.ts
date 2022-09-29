@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsOptional, IsString, Length, MaxLength } from 'class-validator';
 import { IsIncludeBlank } from 'src/decorator/validate';
 
 export class CreateBookDto {
@@ -34,11 +35,15 @@ export class BookListDto {
     @ApiProperty({
         description: '最新 id',
     })
+    @IsInt()
+    @Type(() => Number)
     lastId: number;
 
     @ApiProperty({
         description: '每一页size',
         default: 10,
     })
+    @IsInt()
+    @Type(() => Number)
     size: number;
 }

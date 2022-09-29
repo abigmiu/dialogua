@@ -48,5 +48,6 @@ export class LoginDto {
         description: '密码',
         default: 'string',
     })
+    @IsNotEmpty()
     password: string;
 }

@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, Req, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { BookListDto, CreateBookDto } from 'src/dto/book.dto';
 import { RbacAuthGuard } from 'src/guards/auth.guard';
 import { BookService } from './book.service';
-import { Public } from "../../decorator/public";
+import { Public } from '../../decorator/public';
 
 @ApiTags('书籍')
 @Controller('book')
@@ -16,7 +16,7 @@ export class BookController {
     })
     @ApiBearerAuth()
     @Post()
-    create(@Body() body: CreateBookDto) {
+    create(@Body() body: CreateBookDto, @Req() request: Request) {
         return this.bookService.create(body);
     }
 
@@ -25,7 +25,7 @@ export class BookController {
     })
     @Public()
     @Get()
-    list(@Param() body: BookListDto) {
+    list(@Query() body: BookListDto) {
         return this.bookService.list(body);
     }
 }

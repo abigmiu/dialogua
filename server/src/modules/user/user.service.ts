@@ -1,31 +1,20 @@
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import Redis from 'ioredis';
 import { RoleEntity } from 'src/db/role.entity';
 import { UserEntity } from 'src/db/user.entity';
 import { CreateUserDto, LoginDto } from 'src/dto/user.dto';
 import { badReq, NO_USER, PASSWORD_ERROR, SAME_EMAIL } from 'src/expection';
 import { IJwtData } from 'src/types/user';
 import { Repository } from 'typeorm';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepo: Repository<UserEntity>,
-        @InjectRedis()
-        private readonly redis: Redis,
-        private jwtService: JwtService,
+        private authService: AuthService,
     ) {}
-
-    /** 生成 token */
-    createToken(data: IJwtData) {
-        const token = this.jwtService.sign(data);
-        this.redis.hset('dialogua:token', token, 1);
-        return token;
-    }
 
     /** 注册用户 */
     async create(createUserDto: CreateUserDto) {
@@ -65,6 +54,7 @@ export class UserService {
         if (!user) return badReq(NO_USER);
 
         const password = user.password;
+        console.log(password, dto.password, password !== dto.password);
         if (password !== dto.password) return badReq(PASSWORD_ERROR);
 
         const role = user.role;
@@ -73,7 +63,7 @@ export class UserService {
             userId: user.id,
         };
 
-        const token = this.createToken(data);
+        const token = this.authService.createToken(data);
         const retData = {
             id: user.id,
             avatar: user.avatar,

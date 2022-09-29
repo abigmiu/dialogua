@@ -1,8 +1,14 @@
 <template>
     <div class="footer-wrapper">
-        <div class="action-item"></div>
-        <div class="action-item"></div>
-        <div class="action-item"></div>
+        <div class="action-item">
+            <home-icon size="24"></home-icon>
+        </div>
+        <div class="action-item">
+            <add-one size="24"></add-one>
+        </div>
+        <div class="action-item">
+            <me-icon size="24"></me-icon>
+        </div>
     </div>
 </template>
 <script lang="ts" setup>
