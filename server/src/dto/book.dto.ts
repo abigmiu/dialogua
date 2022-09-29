@@ -29,3 +29,16 @@ export class CreateBookDto {
     @IsOptional()
     cover?: string;
 }
+
+export class BookListDto {
+    @ApiProperty({
+        description: '最新 id',
+    })
+    lastId: number;
+
+    @ApiProperty({
+        description: '每一页size',
+        default: 10,
+    })
+    size: number;
+}

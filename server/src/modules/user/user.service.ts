@@ -50,7 +50,7 @@ export class UserService {
             userId: res.id,
             roleId: res.role.id,
         };
-        return this.createToken(data);
+        return this.login(createUserDto);
     }
 
     async login(dto: LoginDto) {
@@ -75,15 +75,11 @@ export class UserService {
 
         const token = this.createToken(data);
         const retData = {
-            ...user,
+            id: user.id,
+            avatar: user.avatar,
+            nickname: user.nickname,
             token,
         };
-        delete retData.del;
-        delete retData.books;
-        delete retData.role;
-        delete retData.password;
-        delete retData.status;
-
         return retData;
     }
 

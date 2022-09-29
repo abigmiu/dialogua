@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@icon-park/vue-next": "^1.4.2",
+    "axios": "^0.27.2",
     "mitt": "^3.0.0",
     "pinia": "^2.0.21",
     "recorder-core": "^1.2.22080700",
@@ -19,6 +20,7 @@
     "vue-router": "4"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/uuid": "^8.3.4",
     "@vitejs/plugin-basic-ssl": "^0.1.2",
     "@vitejs/plugin-vue": "^3.0.3",

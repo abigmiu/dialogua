@@ -90,7 +90,7 @@ export const useDialogStore = defineStore('dialog', {
                 case 'edit':
                     this.edit({
                         content: this.$state.currentContent,
-                        renderId: this.$state.activeDialogId,
+                        renderId: this.$state.activeDialogId as string,
                         ...roleData,
                         type,
                     })
