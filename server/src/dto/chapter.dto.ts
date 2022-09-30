@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Length } from 'class-validator';
 import { IsIncludeBlank } from 'src/decorator/validate';
 import { ISection } from 'src/types/section';
-import { SectionCreateDto } from './Section.dto';
+import { SectionCreateDto } from './section.dto';
 
 export class CreateChapterDto {
     @ApiProperty({

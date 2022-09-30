@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEmpty, IsString, Length, IsNotEmpty, IsIn } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { IsEmail, IsString, Length, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator';
 import { IsIncludeBlank } from 'src/decorator/validate';
 
 export class CreateUserDto {
@@ -50,4 +50,28 @@ export class LoginDto {
     })
     @IsNotEmpty()
     password: string;
+}
+
+export class UpdateUserDto {
+    @ApiPropertyOptional({
+        description: '密码',
+    })
+    @IsOptional()
+    password?: string;
+
+    @ApiPropertyOptional({
+        description: '确认密码',
+    })
+    @IsOptional()
+    confirmPassword?: string;
+
+    @ApiPropertyOptional({
+        description: '昵称',
+    })
+    @IsOptional()
+    @IsString()
+    @Length(2, 10, {
+        message: '昵称最多为2-10个字',
+    })
+    nickname?: string;
 }

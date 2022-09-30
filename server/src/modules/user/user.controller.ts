@@ -8,15 +8,17 @@ import {
     Delete,
     UseInterceptors,
     ClassSerializerInterceptor,
+    Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, LoginDto } from 'src/dto/user.dto';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateUserDto, LoginDto, UpdateUserDto } from 'src/dto/user.dto';
 import { Public } from 'src/decorator/public';
+import { IdParam } from 'src/dto/param.dto';
 
 @ApiTags('用户')
+@ApiBearerAuth()
 @Controller('user')
-@UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
@@ -38,23 +40,20 @@ export class UserController {
         return this.userService.login(dto);
     }
 
-    @Get()
-    findAll() {
-        return this.userService.findAll();
-    }
-
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.userService.findOne(+id);
-    }
-
+    @ApiOperation({
+        summary: '更新用户信息',
+    })
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateUserDto) {
-        return this.userService.update(+id, updateUserDto);
+    update(@Param() param: IdParam, @Body() updateUserDto: UpdateUserDto) {
+        console.log(param);
+        return this.userService.update(param.id, updateUserDto);
     }
 
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.userService.remove(+id);
+    @ApiOperation({
+        summary: '冻结用户'
+    })
+    @Put(':id')
+    freeze(@Param() param: IdParam) {
+        console.log('');
     }
 }

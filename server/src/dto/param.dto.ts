@@ -12,5 +12,5 @@ export class IdParam {
     @IsInt({
         message: 'id只能为整数',
     })
-    id: string;
+    id: number;
 }

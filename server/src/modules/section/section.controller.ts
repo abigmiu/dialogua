@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IdParam } from 'src/dto/param.dto';
-import { SectionCreateDto, UpdateSectionDto } from 'src/dto/Section.dto';
+import { SectionCreateDto, UpdateSectionDto } from 'src/dto/section.dto';
 import { SectionService } from './section.service';
 
 @ApiTags('段落')

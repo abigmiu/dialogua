@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChapterEntity } from 'src/db/chapter.entity';
 import { SectionEntity } from 'src/db/section.entity';
-import { SectionCreateDto, UpdateSectionDto } from 'src/dto/Section.dto';
+import { SectionCreateDto, UpdateSectionDto } from 'src/dto/section.dto';
 import { badReq, BOOK_NOT_EXIT } from 'src/expection';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 

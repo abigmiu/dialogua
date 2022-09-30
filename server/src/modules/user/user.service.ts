@@ -54,7 +54,6 @@ export class UserService {
         if (!user) return badReq(NO_USER);
 
         const password = user.password;
-        console.log(password, dto.password, password !== dto.password);
         if (password !== dto.password) return badReq(PASSWORD_ERROR);
 
         const role = user.role;
