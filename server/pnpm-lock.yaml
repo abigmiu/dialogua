@@ -18,6 +18,7 @@ specifiers:
   '@types/node': ^16.0.0
   '@types/passport-jwt': ^3.0.6
   '@types/supertest': ^2.0.11
+  '@types/webpack-env': ^1.18.0
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
   chalk: ^5.0.1
@@ -91,6 +92,7 @@ devDependencies:
   '@types/node': 16.11.59
   '@types/passport-jwt': 3.0.6
   '@types/supertest': 2.0.12
+  '@types/webpack-env': 1.18.0
   '@typescript-eslint/eslint-plugin': 5.37.0_go2bhpxwaowc6dbfc3w7x3jkye
   '@typescript-eslint/parser': 5.37.0_76twfck5d7crjqrmw4yltga7zm
   cross-env: 7.0.3
@@ -1403,6 +1405,10 @@ packages:
     resolution: {integrity: sha512-X3HPWTwXRerBZS7Mo1k6vMVR1Z6zmJcDVn5O/31whe0tnjE4te6ZJSJGq1RiqHPjzPdMTfjCFogDJmwng9xHaQ==}
     dependencies:
       '@types/superagent': 4.1.15
+    dev: true
+
+  /@types/webpack-env/1.18.0:
+    resolution: {integrity: sha512-56/MAlX5WMsPVbOg7tAxnYvNYMMWr/QJiIp6BxVSW3JJXUVzzOn64qW8TzQyMSqSUFM2+PVI4aUHcHOzIz/1tg==}
     dev: true
 
   /@types/yargs-parser/21.0.0:

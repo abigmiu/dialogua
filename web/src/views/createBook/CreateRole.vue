@@ -44,6 +44,7 @@ const roleData = ref<IRole>({
     avatar: '',
     side: 'left',
     introduction: '',
+    // id: 0,
 })
 const createRole = (side: 'left' | 'right') => {
     if (!(side === 'left' || side === 'right')) return;

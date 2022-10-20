@@ -19,8 +19,10 @@ export class AuthService {
     }
 
     async validate(token?: string) {
+        console.log('token', token);
         if (!token) throw new UnauthorizedException();
         const exit = await this.redis.hexists('dialogua:token', token);
+        console.log('exit', exit);
         if (!exit) throw new UnauthorizedException();
     }
 }

@@ -1,6 +1,13 @@
 import { join } from 'path';
+import { getMetadataArgsStorage } from 'typeorm';
+import { IAppConfig } from './type';
 
-export default {
+const dbPath = join(__dirname, '../db');
+const entityContext = require.context('../db', true, /\.entity\.ts$/);
+
+const meta = getMetadataArgsStorage().tables.map((tbl) => tbl.target);
+
+const config: IAppConfig = {
     db: {
         type: 'mysql',
         host: 'localhost',
@@ -9,20 +16,29 @@ export default {
         password: '123456',
         database: 'dialogua',
         charset: 'utf8mb4',
-        entities: [join(__dirname, '../db/**/*.entity{.js,.ts}')],
-        migrations: [join(__dirname, '../migrations/**/*{.js,.ts}')],
-        cli: {
-            migrationsDir: 'src/migrations',
-            entitiesDir: 'src/db',
-        },
+        entities: [
+            ...entityContext.keys().map((id) => {
+                const entityModule = entityContext(id);
+                // We must get entity from module (commonjs)
+                // Get first exported value from module (which should be entity class)
+                const [entity] = Object.values(entityModule);
+                return entity as any;
+            }),
+        ],
         synchronize: true,
+        keepConnectionAlive: true,
     },
+
     enableSwagger: true,
     port: 3008,
     prefix: '/api',
     jwtSecret: '123456',
     redis: {
-        host: 'localhost',
-        port: 6379,
+        config: {
+            host: 'localhost',
+            port: 6379,
+        },
     },
 };
+
+export default config;

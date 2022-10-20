@@ -1,5 +1,6 @@
 <template>
     <div class="home">
+        <router-view></router-view>
         <layout-footer></layout-footer>
     </div>
 </template>

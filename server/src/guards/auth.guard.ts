@@ -20,9 +20,9 @@ export class RbacAuthGuard extends AuthGuard('jwt') {
         if (isPublic) return true;
 
         const request = context.switchToHttp().getRequest();
+        console.log(request);
         const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
         await this.authService.validate(token);
-
         return super.canActivate(context);
     }
 }

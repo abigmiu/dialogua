@@ -1,5 +1,6 @@
 <template>
     <div class="h-full flex flex-col justify-center items-center p-5">
+        <h1 class="mb-2 text-lg">注册</h1>
         <van-field
             placeholder="昵称"
             v-model.trim="formData.nickname"

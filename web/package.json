@@ -17,6 +17,7 @@
     "uuid": "^8.3.2",
     "vant": "^3.6.1",
     "vue": "^3.2.37",
+    "vue-request": "^1.2.4",
     "vue-router": "4"
   },
   "devDependencies": {

@@ -5,6 +5,7 @@
             left-text="返回"
             left-arrow
             class="mb-5"
+            @click-left="onClickLeft"
         />
 
         <van-form @submit="onSubmit">
@@ -51,7 +52,10 @@
 import { reactive, ref } from 'vue';
 import { Toast } from 'vant';
 import type { UploaderFileListItem } from 'vant';
+import { useRouter } from 'vue-router';
 const loading = ref(false);
+
+const router = useRouter()
 
 const bookData = reactive({
     name: '',
@@ -99,4 +103,8 @@ const onSubmit = async (values: any) => {
         loading.value = false;
     }
 };
+
+const onClickLeft = () => {
+    router.back();
+}
 </script>

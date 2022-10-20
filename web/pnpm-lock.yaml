@@ -19,6 +19,7 @@ specifiers:
   vite: ^3.0.7
   vite-plugin-windicss: ^1.8.7
   vue: ^3.2.37
+  vue-request: ^1.2.4
   vue-router: '4'
   vue-tsc: ^0.39.5
   windicss: ^3.5.6
@@ -32,6 +33,7 @@ dependencies:
   uuid: 8.3.2
   vant: 3.6.1_vue@3.2.38
   vue: 3.2.38
+  vue-request: 1.2.4_vue@3.2.38
   vue-router: 4.1.5_vue@3.2.38
 
 devDependencies:
@@ -1060,6 +1062,14 @@ packages:
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true
+    dependencies:
+      vue: 3.2.38
+    dev: false
+
+  /vue-request/1.2.4_vue@3.2.38:
+    resolution: {integrity: sha512-i+i+6Fog6F8EtYUeueumzKS9Sg06CvjsMXH8TK0YSBxY4sDxIJ+snTEke5rLqiV9d19DTuJOxPQFjTBUpsMtXA==}
+    peerDependencies:
+      vue: ^3.0.0
     dependencies:
       vue: 3.2.38
     dev: false

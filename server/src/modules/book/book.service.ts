@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookEntity } from 'src/db/book.entity';
+import { UserEntity } from 'src/db/user.entity';
 import { BookListDto, CreateBookDto } from 'src/dto/book.dto';
 import { badReq, CREATE_FAIL, SAME_BOOK_NAME } from 'src/expection';
 import { LessThan, Repository } from 'typeorm';
@@ -12,11 +13,14 @@ export class BookService {
         private readonly bookRepo: Repository<BookEntity>,
     ) {}
 
-    async create(createBookDto: CreateBookDto) {
+    async create(userId: number, createBookDto: CreateBookDto) {
         const sameNameRes = await this.bookRepo.findOne({
             where: {
                 title: createBookDto.title,
                 del: false,
+                user: {
+                    id: userId,
+                },
             },
         });
         if (sameNameRes) return badReq(SAME_BOOK_NAME);
@@ -25,6 +29,10 @@ export class BookService {
         book.intro = createBookDto.intro;
         book.title = createBookDto.title;
         book.cover = createBookDto.cover;
+        const user = new UserEntity();
+        user.id = userId;
+        book.user = user;
+
         try {
             await this.bookRepo.save(book);
         } catch {
@@ -49,6 +57,14 @@ export class BookService {
             });
         }
 
+        return res;
+    }
+
+    async getUserBooks(userId: number) {
+        const res = await this.bookRepo
+            .createQueryBuilder('book')
+            .where(`book.userId = ${userId}`)
+            .getMany();
         return res;
     }
 }
