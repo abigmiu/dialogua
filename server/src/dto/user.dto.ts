@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsEmail, IsString, Length, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator';
 import { IsIncludeBlank } from 'src/decorator/validate';
 
@@ -36,6 +36,28 @@ export class CreateUserDto {
     nickname: string;
 }
 
+export class CreateUserResponse {
+    @ApiProperty({
+        description: 'id',
+    })
+    id: number;
+
+    @ApiProperty({
+        description: '头像',
+    })
+    avatar: string;
+
+    @ApiProperty({
+        description: '昵称',
+    })
+    nickname: string;
+
+    @ApiProperty({
+        description: 'token',
+    })
+    token: string;
+}
+
 export class LoginDto {
     @ApiProperty({
         description: '邮箱',
@@ -50,6 +72,28 @@ export class LoginDto {
     })
     @IsNotEmpty()
     password: string;
+}
+
+export class LoginResponse {
+    @ApiProperty({
+        description: 'id',
+    })
+    id: number;
+
+    @ApiProperty({
+        description: '头像',
+    })
+    avatar: string;
+
+    @ApiProperty({
+        description: '昵称',
+    })
+    nickname: string;
+
+    @ApiProperty({
+        description: 'token',
+    })
+    token: string;
 }
 
 export class UpdateUserDto {

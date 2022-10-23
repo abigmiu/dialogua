@@ -11,8 +11,8 @@
         <van-form @submit="onSubmit">
             <van-cell-group inset>
                 <van-field
-                    v-model="bookData.name"
-                    name="name"
+                    v-model="bookData.title"
+                    name="title"
                     label="书名"
                     placeholder="此处输入书名"
                     required
@@ -53,12 +53,13 @@ import { reactive, ref } from 'vue';
 import { Toast } from 'vant';
 import type { UploaderFileListItem } from 'vant';
 import { useRouter } from 'vue-router';
+import { http } from '@/utils/http';
 const loading = ref(false);
 
-const router = useRouter()
+const router = useRouter();
 
 const bookData = reactive({
-    name: '',
+    title: '',
     cover: '',
 });
 
@@ -91,13 +92,16 @@ const nameRule = [
     },
 ];
 
-const onSubmit = async (values: any) => {
+const onSubmit = async () => {
     try {
         loading.value = true;
-        await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve('1');
-            }, 2000);
+        const res: any = await http.post('book', bookData);
+        Toast('创建成功');
+        await router.push({
+            name: 'CreateRole',
+            params: {
+                bookId: res.id,
+            },
         });
     } finally {
         loading.value = false;
@@ -106,5 +110,5 @@ const onSubmit = async (values: any) => {
 
 const onClickLeft = () => {
     router.back();
-}
+};
 </script>

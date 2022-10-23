@@ -11,8 +11,14 @@ import {
     Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, LoginDto, UpdateUserDto } from 'src/dto/user.dto';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+    CreateUserDto,
+    CreateUserResponse,
+    LoginDto,
+    LoginResponse,
+    UpdateUserDto,
+} from 'src/dto/user.dto';
 import { Public } from 'src/decorator/public';
 import { IdParam } from 'src/dto/param.dto';
 
@@ -25,6 +31,9 @@ export class UserController {
     @ApiOperation({
         summary: '注册',
     })
+    @ApiResponse({
+        type: CreateUserResponse,
+    })
     @Public()
     @Post()
     create(@Body() createUserDto: CreateUserDto) {
@@ -33,6 +42,9 @@ export class UserController {
 
     @ApiOperation({
         summary: '登录',
+    })
+    @ApiResponse({
+        type: LoginResponse,
     })
     @Public()
     @Post('login')
@@ -50,7 +62,7 @@ export class UserController {
     }
 
     @ApiOperation({
-        summary: '冻结用户'
+        summary: '冻结用户',
     })
     @Put(':id')
     freeze(@Param() param: IdParam) {

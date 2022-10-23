@@ -27,7 +27,11 @@
         <div class="role-list">
             <role-item @click="editRole"></role-item>
         </div>
-        <role-editor v-model:visible="editorVisible" :roleData="roleData"></role-editor>
+        <role-editor
+            v-model:visible="editorVisible"
+            :roleData="roleData"
+            @confirm="onConfirm"
+        ></role-editor>
     </div>
 </template>
 <script lang="ts" setup>
@@ -45,7 +49,7 @@ const roleData = ref<IRole>({
     side: 'left',
     introduction: '',
     // id: 0,
-})
+});
 const createRole = (side: 'left' | 'right') => {
     if (!(side === 'left' || side === 'right')) return;
     roleData.value = {
@@ -53,15 +57,18 @@ const createRole = (side: 'left' | 'right') => {
         avatar: '',
         side,
         introduction: '',
-    }
+    };
     editorVisible.value = true;
-}
+};
 
 const editRole = (data: IRole) => {
     roleData.value = data;
     editorVisible.value = true;
-}
+};
 
+const onConfirm = (data: any) {
+    console.log('data')
+}
 </script>
 <style lang="scss" scoped>
 .role-btns {
@@ -100,5 +107,9 @@ const editRole = (data: IRole) => {
             background-color: #477998;
         }
     }
+}
+
+.role-list {
+    margin-top: 20px;
 }
 </style>

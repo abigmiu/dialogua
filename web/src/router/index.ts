@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
                 name: 'User',
                 component: () => import('@/views/user/UserPage.vue'),
             },
-        ]
+        ],
     },
     {
         path: '/create-book',
@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/createBook/Index.vue'),
     },
     {
-        path: '/create-role',
+        path: '/create-role/:bookId',
         name: 'CreateRole',
         component: () => import('@/views/createBook/CreateRole.vue'),
     },
@@ -30,18 +30,13 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/register',
-        name:  'Register',
+        name: 'Register',
         component: () => import('@/views/login/Register.vue'),
     },
     {
         path: '/login',
         name: 'Login',
         component: () => import('@/views/login/Login.vue'),
-    },
-    {
-        path: '/test',
-        name: 'Test',
-        component: () => import('@/views/test/Index.vue'),
     },
 ];
 

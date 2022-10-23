@@ -42,24 +42,32 @@ import { reactive, ref, watch } from 'vue';
 import { Dialog, Toast } from 'vant';
 import type { UploaderFileListItem } from 'vant';
 import type { IRole } from '@/types/Role';
+import { http } from '@/utils/http';
+import { useRouter, useRoute } from 'vue-router';
 
 const VanDialog = Dialog.Component;
 
+const route = useRoute();
+const params = route.params;
+const id = Number(params.bookId as string);
+
 const props = defineProps<{
     visible: Boolean;
-    roleData: IRole
+    roleData: IRole;
 }>();
 const emits = defineEmits<{
     (e: 'update:visible', data: boolean): void;
+    (e: 'confirm', data: any): void;
 }>();
 
 const onClose = async (action: string) => {
     if (action === 'confirm') {
-        await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve('1');
-            }, 2000);
-        });
+        try {
+            const res = await http.post(`book-role/${id}`, roleData);
+            emits('confirm', res);
+        } catch {
+            return false;
+        }
     }
 
     emits('update:visible', false);
@@ -71,14 +79,18 @@ const roleData = reactive({
     name: '',
     introduction: '',
     side: 'left',
+    type: 'text',
 });
-watch(() => props.roleData, (value: IRole) => {
-    roleData.id = value.id || 0;
-    roleData.cover = value.cover;
-    roleData.name = value.name;
-    roleData.introduction = value.introduction;
-    roleData.side = value.side;
-})
+watch(
+    () => props.roleData,
+    (value: IRole) => {
+        roleData.id = value.id || 0;
+        roleData.cover = value.cover;
+        roleData.name = value.name;
+        roleData.introduction = value.introduction;
+        roleData.side = value.side;
+    },
+);
 
 const coverFile = ref([]);
 const onOversize = () => {
@@ -105,7 +117,7 @@ const validateForm = () => {
     }
 
     return true;
-}
+};
 </script>
 <style lang="scss" scoped>
 .name-input {

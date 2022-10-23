@@ -17,9 +17,12 @@ export class BookRoleService {
         private readonly bookRepo: Repository<BookEntity>,
     ) {}
 
-    async create(bookId: number, createDto: CreateBookRoleDto) {
+    async create(bookId: number, createDto: CreateBookRoleDto, userId: number) {
         const bookExit = await this.bookRepo.findOne({
             where: {
+                user: {
+                    id: userId,
+                },
                 id: bookId,
                 del: false,
             },
@@ -36,22 +39,35 @@ export class BookRoleService {
         bookRole.intro = createDto.intro;
         bookRole.type = RoleType[createDto.type];
 
-        const allowType = ['text', 'voiceover'];
-        if (!allowType.includes(createDto.type)) {
-            return badReq(CREATE_FAIL);
-        }
+        // const allowType = ['text', 'voiceover'];
+        // if (!allowType.includes(createDto.type)) {
+        //     return badReq(CREATE_FAIL);
+        // }
         if (createDto.type === 'text') {
             const allowSide = ['left', 'right'];
             if (!allowSide.includes(createDto.side)) {
+                console.log('不滨海');
                 return badReq(CREATE_FAIL);
             }
             bookRole.side = RoleSide[createDto.side];
         }
 
         try {
-            await this.bookRoleRepo.save(bookRole);
+            const res = await this.bookRoleRepo.save(bookRole);
+            return res;
         } catch (e) {
+            console.log(e);
             return badReq(CREATE_FAIL);
         }
+    }
+
+    list(bookId: number) {
+        return this.bookRoleRepo.find({
+            where: {
+                book: {
+                    id: bookId,
+                },
+            },
+        });
     }
 }

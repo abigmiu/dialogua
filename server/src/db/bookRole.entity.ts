@@ -24,6 +24,7 @@ export class BookRoleEntity extends CustomBaseEntity {
 
     @Column({
         length: 200,
+        default: '',
     })
     avatar: string;
 

@@ -34,7 +34,10 @@ export class BookService {
         book.user = user;
 
         try {
-            await this.bookRepo.save(book);
+            const res = await this.bookRepo.save(book);
+            return {
+                id: res.id,
+            };
         } catch {
             return badReq(CREATE_FAIL);
         }
