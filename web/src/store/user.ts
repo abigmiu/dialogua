@@ -26,5 +26,15 @@ export const useUserStore = defineStore('user', {
             localStorage.setItem('userInfo', JSON.stringify(data));
             localStorage.setItem('token', data.token);
         },
+        removeUser() {
+            this.$state.userInfo = null;
+            localStorage.removeItem('userInfo')
+            localStorage.removeItem('token')
+        }
     },
 });
+
+export const removeUser = () => {
+    const store = useUserStore();
+    store.removeUser();
+}

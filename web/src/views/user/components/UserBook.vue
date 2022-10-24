@@ -18,13 +18,26 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { IBook } from "@/types/Book";
 import { http } from '@/utils/http';
 import { useRequest } from 'vue-request';
+import { useUserStore } from '@/store/user';
 
-const fetchData = http.get<IBook[]>('book/user')
-const { data, loading } = useRequest(fetchData)
+const userStore = useUserStore();
+
+const fetchData = () => http.get<IBook[]>('book/user')
+const { data, loading, run } = useRequest(fetchData, {
+    manual: true,
+})
+
+onMounted(() => {
+    if (userStore.userInfo) {
+        run()
+    }
+})
+
+
 
 </script>
 <style lang="scss" scoped>

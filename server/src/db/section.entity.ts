@@ -12,6 +12,9 @@ export class SectionEntity extends CustomBaseEntity {
     @Column()
     content: string;
 
+    @Column()
+    order: number;
+
     @ManyToOne(() => ChapterEntity, (chapter) => chapter.sections)
     chapter: ChapterEntity;
 }

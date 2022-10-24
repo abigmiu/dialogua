@@ -37,20 +37,8 @@ export class BookRoleService {
         bookRole.name = createDto.name;
         bookRole.avatar = createDto.avatar;
         bookRole.intro = createDto.intro;
-        bookRole.type = RoleType[createDto.type];
-
-        // const allowType = ['text', 'voiceover'];
-        // if (!allowType.includes(createDto.type)) {
-        //     return badReq(CREATE_FAIL);
-        // }
-        if (createDto.type === 'text') {
-            const allowSide = ['left', 'right'];
-            if (!allowSide.includes(createDto.side)) {
-                console.log('不滨海');
-                return badReq(CREATE_FAIL);
-            }
-            bookRole.side = RoleSide[createDto.side];
-        }
+        bookRole.book = book;
+        bookRole.side = createDto.side;
 
         try {
             const res = await this.bookRoleRepo.save(bookRole);
@@ -61,13 +49,33 @@ export class BookRoleService {
         }
     }
 
-    list(bookId: number) {
-        return this.bookRoleRepo.find({
+    async update(roleId: number, dto: CreateBookRoleDto) {
+        const bookRole = new BookRoleEntity();
+
+        bookRole.id = roleId;
+        if (dto.avatar) bookRole.avatar = dto.avatar;
+        if (dto.intro) bookRole.intro = dto.intro;
+        if (dto.name) bookRole.name = dto.name;
+
+        await this.bookRoleRepo.save(bookRole);
+        const res = await this.bookRoleRepo.findOne({
+            where: {
+                id: roleId,
+            },
+        });
+        return res;
+    }
+
+    async list(bookId: number) {
+        const res = await this.bookRoleRepo.find({
             where: {
                 book: {
                     id: bookId,
                 },
             },
         });
+        res.forEach((item) => (item.side = item.side === 1 ? 'left' : 'right'));
+
+        return res;
     }
 }

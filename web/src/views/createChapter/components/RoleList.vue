@@ -20,7 +20,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import VoiceOver from './VoiceOverRole.vue';
 import SettingRole from './SettingRole.vue';
@@ -29,7 +29,16 @@ import { Down as DownIcon } from '@icon-park/vue-next';
 
 import { useRoleStore } from '@/store/role'
 import { useDialogStore } from '@/store/dialog'
-import { roles } from '@/constant/index'
+import { IRole } from '@/types/Role';
+import { http } from '@/utils/http';
+import { useRequest } from 'vue-request';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+
+const props = defineProps<{
+    bookId: string
+}>()
 
 const roleStore = useRoleStore()
 const dialogStore = useDialogStore()
@@ -42,13 +51,27 @@ const onChangeRole = (id: number) => {
     if (currentAction.value === 'edit') return
     roleStore.changeActiveRoleId(id);
 }
-const initRoles = () => {
+const initRoles = (roles: IRole[]) => {
     roleStore.changeRoleList(roles);
 }
+onMounted(() => {
+    initRoles([])
+})
+const fetchData = () => http.get<IRole[]>(`book-role/list/${props.bookId}`)
+const { data } = useRequest(fetchData) 
+watch(data, () => {
+    if (!data.value) return;
+    initRoles(data.value)
+})
 
 // TODO:
 const onSettingRole = () => {
-    console.log('onSettingRole');
+    router.push({
+        name: 'CreateRole',
+        params: {
+            bookId: props.bookId,
+        }
+    })
 }
 
 

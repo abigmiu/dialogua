@@ -97,11 +97,14 @@ const onSubmit = async () => {
         loading.value = true;
         const res: any = await http.post('book', bookData);
         Toast('创建成功');
-        await router.push({
+        await router.replace({
             name: 'CreateRole',
             params: {
                 bookId: res.id,
             },
+            query: {
+                createChapter: true,
+            }
         });
     } finally {
         loading.value = false;

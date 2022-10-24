@@ -1,10 +1,11 @@
 import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { BookListDto, CreateBookDto } from 'src/dto/book.dto';
+import { BookListDto, CreateBookDto, CreateBookResponse } from 'src/dto/book.dto';
 import { BookService } from './book.service';
 import { Public } from '../../decorator/public';
 import { IJwtData } from 'src/types/user';
+import { BookEntity } from 'src/db/book.entity';
 
 @ApiTags('书籍')
 @ApiBearerAuth()
@@ -15,6 +16,9 @@ export class BookController {
     @ApiOperation({
         summary: '创建',
     })
+    @ApiResponse({
+        type: CreateBookResponse,
+    })
     @Post()
     create(@Body() body: CreateBookDto, @Req() request: Request) {
         const userId = (request.user as IJwtData).userId;
@@ -24,6 +28,9 @@ export class BookController {
     @ApiOperation({
         summary: '获取列表',
     })
+    @ApiResponse({
+        type: BookEntity,
+    })
     @Public()
     @Get()
     list(@Query() body: BookListDto) {
@@ -32,6 +39,9 @@ export class BookController {
 
     @ApiOperation({
         summary: '获取当前用户书籍列表',
+    })
+    @ApiResponse({
+        type: BookEntity,
     })
     @Get('user')
     getUserBoolList(@Req() req: Request) {

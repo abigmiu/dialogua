@@ -36,7 +36,7 @@ export class ChapterService {
             textCount += item.content.trim().length;
         });
 
-        chapter.content = [];
+        chapter.content = body.content;
         chapter.title = body.title;
         chapter.text_count = textCount;
 
@@ -45,5 +45,22 @@ export class ChapterService {
         } catch {
             return badReq(CREATE_FAIL);
         }
+    }
+
+    async update(chapterId: number, dto: CreateChapterDto) {
+        const chapter = new ChapterEntity();
+        chapter.id = chapterId;
+        if (dto.title) {
+            chapter.title = dto.title;
+        }
+        if (dto.content) {
+            chapter.content = dto.content;
+            let textCount = 0;
+            dto.content.forEach((item) => {
+                textCount += item.content.trim().length;
+            });
+            chapter.text_count = textCount;
+        }
+        await this.chapterRepo.save(chapter);
     }
 }

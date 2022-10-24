@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateChapterDto } from 'src/dto/chapter.dto';
 import { IdParam } from 'src/dto/param.dto';
@@ -15,5 +15,13 @@ export class ChapterController {
     })
     create(@Param() param: IdParam, @Body() body: CreateChapterDto) {
         return this.chapterService.create(+param.id, body);
+    }
+
+    @Put(':id')
+    @ApiOperation({
+        summary: '更新章节',
+    })
+    update(@Param() param: IdParam, @Body() body: CreateChapterDto) {
+        return this.chapterService.update(param.id, body);
     }
 }

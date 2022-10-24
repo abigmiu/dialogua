@@ -6,17 +6,24 @@
                 round
                 width="50px"
                 height="50px"
-                src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+                :src="source.avatar"
             />
-            <div class="role-side">右侧角色</div>
+            <div class="role-side">{{ source.side === 1 ? '左侧角色' : '右侧角色' }}</div>
         </div>
         <div class="right">
-            <div class="name">312312</div>
-            <div class="introduction">123123123</div>
+            <div class="name">{{ source.name }}</div>
+            <div class="introduction">{{ source.intro || '无' }}</div>
         </div>
     </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { IRole } from '@/types/Role';
+
+const props = defineProps<{
+    source: IRole,
+}>();
+
+</script>
 <style lang="scss" scoped>
 .role-item-wrapper {
     padding: 15px 10px;

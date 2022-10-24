@@ -17,12 +17,7 @@ export class CreateBookRoleDto {
     avatar?: string;
 
     @ApiProperty({
-        description: '位置',
+        description: '位置 1 为 left， 2 为 right',
     })
-    side?: 'left' | 'right';
-
-    @ApiProperty({
-        description: '类型',
-    })
-    type: 'text' | 'voiceover';
+    side: number;
 }

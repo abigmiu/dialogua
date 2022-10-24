@@ -31,6 +31,13 @@ export class CreateBookDto {
     cover?: string;
 }
 
+export class CreateBookResponse {
+    @ApiProperty({
+        description: '书本ID',
+    })
+    id: number;
+}
+
 export class BookListDto {
     @ApiProperty({
         description: '最新 id',

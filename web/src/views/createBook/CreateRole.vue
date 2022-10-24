@@ -2,77 +2,144 @@
 <template>
     <div>
         <van-nav-bar
-            title="新建角色"
-            right-text="保存"
+            title='新建角色'
+            :right-text="saveLoading ? '保存中' : '保存' "
             left-arrow
-            class="mb-5"
+            class='mb-5'
+            @click-left='onBack'
+            @click-right='onSave'
         ></van-nav-bar>
-        <div class="role-btns">
-            <div class="role-btn">
-                <div class="title">左侧角色</div>
-                <div class="tip">可以随意添加多个角色</div>
-                <div class="add-icon left" @click="createRole('left')">
-                    <plus-icon fill="#ffffff" size="32" />
+        <div class='role-btns'>
+            <div class='role-btn'>
+                <div class='title'>左侧角色</div>
+                <div class='tip'>可以随意添加多个角色</div>
+                <div class='add-icon left' @click='createRole(1)'>
+                    <plus-icon fill='#ffffff' size='32' />
                 </div>
             </div>
-            <div class="role-btn">
-                <div class="title">右侧角色</div>
-                <div class="tip">可以随意添加多个角色，通常主角在右边</div>
-                <div class="add-icon right" @click="createRole('right')">
-                    <plus-icon fill="#ffffff" size="32" />
+            <div class='role-btn'>
+                <div class='title'>右侧角色</div>
+                <div class='tip'>可以随意添加多个角色，通常主角在右边</div>
+                <div class='add-icon right' @click='createRole(2)'>
+                    <plus-icon fill='#ffffff' size='32' />
                 </div>
             </div>
         </div>
 
-        <div class="role-list">
-            <role-item @click="editRole"></role-item>
+        <div class='role-list'>
+            <role-item
+                v-for='item in roleList'
+                :key='item.id'
+                :source='item'
+                @click='editRole(item)'
+            ></role-item>
         </div>
         <role-editor
-            v-model:visible="editorVisible"
-            :roleData="roleData"
-            @confirm="onConfirm"
+            v-model:visible='editorVisible'
+            :roleData='roleData'
+            :active-type='activeType'
+            @confirm='onConfirm'
         ></role-editor>
     </div>
 </template>
-<script lang="ts" setup>
-import { ref } from 'vue';
+<script lang='ts' setup>
+import { computed, reactive, ref } from 'vue';
 import { Plus as PlusIcon } from '@icon-park/vue-next';
 import RoleEditor from './components/RoleEditor.vue';
 import RoleItem from './components/RoleItem.vue';
 import type { IRole } from '@/types/Role';
+import { http } from '@/utils/http';
+import { useRequest } from 'vue-request';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+const bookId = Number(route.params.bookId as string);
 
 const editorVisible = ref(false);
+const activeType = ref<'add' | 'edit'>('add');
 
 const roleData = ref<IRole>({
     name: '',
     avatar: '',
-    side: 'left',
-    introduction: '',
+    side: 1,
+    intro: '',
     // id: 0,
 });
-const createRole = (side: 'left' | 'right') => {
-    if (!(side === 'left' || side === 'right')) return;
+
+const fetchRoleList = () => http.get<IRole[]>(`book-role/list/${bookId}`);
+const { data, loading } = useRequest(fetchRoleList);
+const roleList = computed(() => {
+    if (!data.value) return [];
+    return reactive(data.value);
+});
+
+const createRole = (side: number) => {
     roleData.value = {
         name: '',
         avatar: '',
         side,
-        introduction: '',
+        intro: '',
     };
+    activeType.value = 'add';
     editorVisible.value = true;
 };
 
 const editRole = (data: IRole) => {
+    activeType.value = 'edit';
     roleData.value = data;
     editorVisible.value = true;
 };
 
-const onConfirm = (data: any) {
-    console.log('data')
-}
+const onConfirm = (data: IRole) => {
+    if (activeType.value === 'add') {
+        roleList.value.push(data);
+    } else {
+        const index = roleList.value.findIndex((item) => item.id === data.id);
+        if (index !== -1) {
+            roleList.value.splice(index, 1, data);
+        }
+    }
+};
+
+/** 返回 */
+const onBack = async () => {
+    await router.replace({
+        name: 'CreateChapter',
+        params: {
+            bookId: bookId,
+        },
+        query: {
+            newChapter: true,
+        },
+    });
+};
+/** 保存
+ *  如果是新建数据跳到编写新章节
+ */
+
+const saveLoading = ref(false);
+const onSave = async () => {
+    if (saveLoading.value) return;
+    const { createChapter } = route.query;
+    await router.replace({
+        name: 'CreateChapter',
+        params: {
+            bookId: bookId,
+        },
+        query: {
+            newChapter: true,
+        },
+    });
+    
+
+    saveLoading.value = false;
+};
 </script>
-<style lang="scss" scoped>
+<style lang='scss' scoped>
 .role-btns {
     display: flex;
+
     .role-btn {
         flex: 1;
         display: flex;
@@ -103,6 +170,7 @@ const onConfirm = (data: any) {
         &.left {
             background-color: #5b8266;
         }
+
         &.right {
             background-color: #477998;
         }

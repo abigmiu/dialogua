@@ -20,13 +20,21 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/create-role/:bookId',
+        props: true,
         name: 'CreateRole',
         component: () => import('@/views/createBook/CreateRole.vue'),
     },
     {
-        path: '/create-chapter',
+        path: '/create-chapter/:bookId',
         name: 'CreateChapter',
+        props: true,
         component: () => import('@/views/createChapter/Index.vue'),
+    },
+    {
+        path: '/book/detail/:id',
+        name: 'BookDetail',
+        props: true,
+        component: () => import('@/views/book/bookDetail.vue'),
     },
     {
         path: '/register',

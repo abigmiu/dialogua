@@ -16,7 +16,7 @@ export class ChapterEntity extends CustomBaseEntity {
     @Column({
         type: 'simple-array',
     })
-    content: number[];
+    content: ISection[];
 
     @Column()
     text_count: number;
