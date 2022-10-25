@@ -6,16 +6,16 @@ import { ChapterEntity } from './chapter.entity';
     name: 'section',
 })
 export class SectionEntity extends CustomBaseEntity {
-    @Column({
-        type: 'float',
-    })
+    @Column()
     roleId: number;
 
     @Column()
     content: string;
 
-    @Column()
-    order: number;
+    @Column({
+        type: 'float',
+    })
+    sort: number;
 
     @ManyToOne(() => ChapterEntity, (chapter) => chapter.sections)
     chapter: ChapterEntity;

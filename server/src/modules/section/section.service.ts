@@ -34,7 +34,7 @@ export class SectionService {
         section.roleId = dto.roleId;
 
         const lastOrder = exitChapter.order_count;
-        section.order = lastOrder + 1;
+        section.sort = lastOrder + 1;
         exitChapter.order_count += 1;
         await this.chapterRepo.save(exitChapter);
 
@@ -51,7 +51,6 @@ export class SectionService {
                 del: false,
             },
         });
-        console.log(exitSection);
 
         if (!exitSection) return badReq(SECTION_NOT_EXIT);
 
@@ -86,11 +85,15 @@ export class SectionService {
         if (!exitSection) return badReq(BOOK_NOT_EXIT);
 
         const section = new SectionEntity();
+        section.chapter = exitSection.chapter;
         section.content = dto.content;
         section.roleId = dto.roleId;
-        section.order = exitSection.order - 0.01;
+        section.sort = exitSection.sort - 0.01;
 
-        await this.sectionRepo.save(section);
+        const res = await this.sectionRepo.save(section);
+        return {
+            id: res.id,
+        };
     }
 
     async insertAfter(sectionId: number, dto: SectionCreateDto) {
@@ -101,13 +104,15 @@ export class SectionService {
             },
             relations: ['chapter'],
         });
+        console.log(exitSection);
 
         if (!exitSection) return badReq(BOOK_NOT_EXIT);
 
         const section = new SectionEntity();
+        section.chapter = exitSection.chapter;
         section.content = dto.content;
         section.roleId = dto.roleId;
-        section.order = exitSection.order + 0.01;
+        section.sort = exitSection.sort + 0.01;
 
         const chapter = await this.sectionRepo.findOne({
             where: {
@@ -116,11 +121,14 @@ export class SectionService {
             relations: ['chapter'],
         });
         const lastOrder = chapter.id;
-        if (lastOrder <= exitSection.order) {
-            chapter.order = section.id;
+        if (lastOrder <= exitSection.sort) {
+            chapter.sort = section.id;
             await this.sectionRepo.save(section);
         }
 
-        await this.sectionRepo.save(section);
+        const res = await this.sectionRepo.save(section);
+        return {
+            id: res.id,
+        };
     }
 }

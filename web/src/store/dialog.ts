@@ -1,6 +1,5 @@
 import { ISection, ISectionCreate } from '@/types/Dialog';
 import { defineStore } from 'pinia';
-import { v4 as uuid } from 'uuid';
 import { useRoleStore } from './role';
 import { http } from '@/utils/http';
 import { ISectionCreateResponse } from '@/types/Section';
@@ -128,17 +127,33 @@ export const useDialogStore = defineStore('dialog', {
             this.emptyContent();
         },
         /** 向前插入 */
-        insertBefore(data: ISectionCreate) {
+        async insertBefore(data: ISectionCreate) {
+            const submitData = {
+                content: data.content,
+                roleId: data.roleId,
+            }
+            const res = await http.post<ISectionCreateResponse>(`section/insertBefore/${this.activeSectionId}`, submitData)
             const index = this.findRenderId();
             if (index === -1) return;
-            this.$state.dialogList.splice(index, 0, data);
+            this.$state.dialogList.splice(index, 0, {
+                ...data,
+                id: res.id
+            });
             this.$state.currentContent = '';
         },
         /** 向后插入 */
-        insertAfter(data: ISectionCreate) {
+        async insertAfter(data: ISectionCreate) {
+            const submitData = {
+                content: data.content,
+                roleId: data.roleId,
+            }
+            const res = await http.post<ISectionCreateResponse>(`section/insertAfter/${this.activeSectionId}`, submitData)
             const index = this.findRenderId();
             if (index === -1) return;
-            this.$state.dialogList.splice(index + 1, 0, data);
+            this.$state.dialogList.splice(index + 1, 0, {
+                ...data,
+                id: res.id
+            });
             this.$state.currentContent = '';
         },
         /** 编辑 */

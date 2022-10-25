@@ -45,7 +45,7 @@ import {
     FileEditingOne,
     DeleteOne,
 } from '@icon-park/vue-next';
-import { Dialog, Popover } from 'vant';
+import { Dialog, Popover, PopoverPlacement } from 'vant';
 
 import type { ISection, IEditAction } from '@/types/Dialog';
 import { useDialogStore } from '@/store/dialog';
@@ -59,7 +59,7 @@ const props = defineProps<{
     source: ISection;
 }>();
 const showPopover = ref(false);
-const placement = ref('bottom');
+const placement = ref<PopoverPlacement>('bottom');
 
 const iconRef = ref<HTMLElement>();
 /** 处理 toolTip 位置 */
