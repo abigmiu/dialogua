@@ -1,28 +1,31 @@
-import { IDialog } from '@/types/Dialog';
+import { ISection, ISectionCreate } from '@/types/Dialog';
 import { defineStore } from 'pinia';
 import { v4 as uuid } from 'uuid';
 import { useRoleStore } from './role';
+import { http } from '@/utils/http';
+import { ISectionCreateResponse } from '@/types/Section';
 
 interface IState {
+    currentChapterId: string;
     currentContent: string;
-    activeDialogId: string | null;
-    activeDialog: IDialog;
-    dialogList: IDialog[];
+    activeSectionId: number;
+    activeSection: ISection;
+    dialogList: ISection[];
     currentAction: 'insert' | 'delete' | 'edit' | 'upInsert' | 'downInsert';
 }
 
 export const useDialogStore = defineStore('dialog', {
     state: (): IState => {
         return {
+            currentChapterId: '',
             currentContent: '',
-            activeDialogId: null,
-            activeDialog: {
+            activeSectionId: 0,
+            activeSection: {
+                id: 0,
                 roleAvatar: '',
                 roleId: 0,
                 roleName: '',
-                id: 0,
-                type: 'voiceover',
-                renderId: '',
+                side: 0,
                 content: '',
             },
             dialogList: [],
@@ -36,16 +39,27 @@ export const useDialogStore = defineStore('dialog', {
     },
     actions: {
         /** 当前编辑的对话框 ID */
-        changeActiveDialogId(value: string | null) {
-            this.$state.activeDialogId = value;
+        changeactiveSectionId(value: number) {
+            this.$state.activeSectionId = value;
         },
+        emptyId() {
+            this.activeSectionId = 0;
+        },
+        emptyContent() {
+            this.currentContent = '';
+        },
+        resetActionToInset() {
+            this.currentAction = 'insert';
+        },
+        /** 寻找选中的 id 位于列表的位置 */
         findRenderId() {
-            const renderId = this.$state.activeDialogId;
+            const id = this.$state.activeSectionId;
             const index = this.$state.dialogList.findIndex(
-                (item) => item.renderId === renderId,
+                (item) => item.id === id,
             );
             return index;
         },
+        /** 处理不同的操作类型 */
         handleAction() {
             const actionType = this.$state.currentAction;
             const roleStore = useRoleStore();
@@ -57,78 +71,91 @@ export const useDialogStore = defineStore('dialog', {
                 side: role.side,
             };
 
-            const type = role.id === 0 ? 'voiceover' : 'text';
 
             switch (actionType) {
                 case 'insert':
                     this.insert({
                         content: this.$state.currentContent,
-                        renderId: uuid(),
                         ...roleData,
-                        type,
                     });
                     break;
                 case 'delete':
-                    this.deleteDialog();
-                    break;
+                    return this.deleteDialog();
                 case 'upInsert':
                     this.insertBefore({
                         content: this.$state.currentContent,
-                        renderId: uuid(),
                         ...roleData,
-                        type,
                     });
                     break;
                 case 'downInsert':
                     this.insertAfter({
                         content: this.$state.currentContent,
-                        renderId: uuid(),
                         ...roleData,
-                        type,
                     });
                     break;
                 case 'edit':
                     this.edit({
+                        id: this.activeSectionId,
                         content: this.$state.currentContent,
-                        renderId: this.$state.activeDialogId as string,
                         ...roleData,
-                        type,
-                    })
+                    });
                     break;
                 default:
                     break;
             }
         },
         /** 删除一条对话 */
-        deleteDialog() {
+        async deleteDialog() {
+            const id = this.activeSectionId;
+            await http.delete(`section/${id}`);
             const index = this.findRenderId();
             if (index === -1) return;
             this.$state.dialogList.splice(index, 1);
+            this.emptyId();
+            this.resetActionToInset();
         },
         /** 最后插入一条 */
-        insert(data: IDialog) {
-            this.$state.dialogList.push(data);
-            this.$state.currentContent = '';
+        async insert(data: ISectionCreate) {
+            const submitData = {
+                content: data.content,
+                roleId: data.roleId,
+            }
+            const res = await http.post<ISectionCreateResponse>(`section/${this.currentChapterId}`, submitData);
+            this.$state.dialogList.push({
+                ...data,
+                id: res.id,
+            });
+            this.emptyContent();
         },
-        insertBefore(data: IDialog) {
+        /** 向前插入 */
+        insertBefore(data: ISectionCreate) {
             const index = this.findRenderId();
             if (index === -1) return;
             this.$state.dialogList.splice(index, 0, data);
             this.$state.currentContent = '';
         },
-        insertAfter(data: IDialog) {
+        /** 向后插入 */
+        insertAfter(data: ISectionCreate) {
             const index = this.findRenderId();
             if (index === -1) return;
             this.$state.dialogList.splice(index + 1, 0, data);
             this.$state.currentContent = '';
         },
-        edit(data: IDialog) {
+        /** 编辑 */
+        async edit(data: ISection) {
+            const submitData = {
+                content: data.content,
+            }
+            await http.patch(`section/${data.id}`, submitData);
+
             const index = this.findRenderId();
             if (index !== -1) {
                 this.$state.dialogList.splice(index, 1, data);
             }
-            this.$state.currentContent = '';
-            this.$state.currentAction = 'insert';
+
+            this.emptyContent();
+            this.emptyId();
+            this.resetActionToInset();
         },
     },
 });

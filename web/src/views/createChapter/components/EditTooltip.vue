@@ -1,19 +1,11 @@
 <!-- 对话框编辑菜单 -->
 <template>
     <div class="editor-wrapper" @click="onHandlePosition" ref="iconRef">
-        <van-popover
-            v-model:show="showPopover"
-            theme="dark"
-            :placement="placement"
-        >
+        <van-popover v-model:show="showPopover" theme="dark" :placement="placement">
             <div class="actions">
                 <div class="action-item" @click="onSelect('edit')">
                     <div>
-                        <file-editing-one
-                            theme="outline"
-                            size="16"
-                            fill="#fff"
-                        />
+                        <file-editing-one theme="outline" size="16" fill="#fff" />
                     </div>
                     <div>编辑</div>
                 </div>
@@ -37,14 +29,9 @@
                 </div>
             </div>
             <template #reference>
-                <pencil-icon
-                    theme="outline"
-                    size="12"
-                    :fill="
-                        activeDialogId === source.renderId ? '#00aff3' : '#333'
-                    "
-                    class="pencil"
-                />
+                <pencil-icon theme="outline" size="12" :fill="
+                    activeSectionId === source.id ? '#00aff3' : '#333'
+                " class="pencil" />
             </template>
         </van-popover>
     </div>
@@ -60,16 +47,16 @@ import {
 } from '@icon-park/vue-next';
 import { Dialog, Popover } from 'vant';
 
-import type { IDialog, IEditAction } from '@/types/Dialog';
+import type { ISection, IEditAction } from '@/types/Dialog';
 import { useDialogStore } from '@/store/dialog';
 import { useRoleStore } from '@/store/role';
 import { storeToRefs } from 'pinia';
 const dialogStore = useDialogStore();
 const roleStore = useRoleStore();
-const { activeDialogId } = storeToRefs(dialogStore);
+const { activeSectionId } = storeToRefs(dialogStore);
 
 const props = defineProps<{
-    source: IDialog;
+    source: ISection;
 }>();
 const showPopover = ref(false);
 const placement = ref('bottom');
@@ -80,7 +67,7 @@ const iconRef = ref<HTMLElement>();
  * 图片没加载完不知道宽度
  */
 const onHandlePosition = () => {
-    dialogStore.$state.activeDialogId = props.source.renderId;
+    dialogStore.$state.activeSectionId = props.source.id;
     if (!iconRef.value) return;
 
     const { top, left, right, bottom } = iconRef.value.getBoundingClientRect();
@@ -134,11 +121,19 @@ const onSelect = (actions: IEditAction) => {
 const onDelete = () => {
     Dialog.confirm({
         message: '确定删除这条内容吗？',
-    }).then(() => {
-        dialogStore.$state.currentAction = 'delete';
-        dialogStore.$state.activeDialogId = props.source.renderId;
-        dialogStore.handleAction();
-    });
+        beforeClose: async (action) => {
+            if (action === 'confirm') {
+                dialogStore.$state.currentAction = 'delete';
+                dialogStore.$state.activeSectionId = props.source.id;
+                try {
+                    await dialogStore.handleAction();               
+                } catch {
+                    return false;
+                }
+            } 
+            return true;
+        }
+    })
 };
 const onEdit = () => {
     dialogStore.$state.currentAction = 'edit';
@@ -164,6 +159,7 @@ const onDownInsert = () => {
         padding: 3px 10px;
     }
 }
+
 .right-bubble .editor-wrapper {
     left: -44px;
 }
@@ -171,6 +167,7 @@ const onDownInsert = () => {
 .actions {
     padding: 8px 10px;
     display: flex;
+
     .action-item {
         width: 40px;
         font-size: 10px;

@@ -17,10 +17,10 @@
     </div>
 </template>
 <script lang="ts" setup>
-import type { IDialog } from '@/types/Dialog';
+import type { ISection } from '@/types/Dialog';
 import { WavesLeft, WavesRight } from '@icon-park/vue-next';
 const props = defineProps<{
-    source: IDialog;
+    source: ISection;
 }>();
 
 const transformDuration = (second: number) => {

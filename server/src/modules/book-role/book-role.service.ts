@@ -74,7 +74,6 @@ export class BookRoleService {
                 },
             },
         });
-        res.forEach((item) => (item.side = item.side === 1 ? 'left' : 'right'));
 
         return res;
     }

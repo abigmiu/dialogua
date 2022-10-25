@@ -43,12 +43,12 @@
     </div>
 </template>
 <script lang='ts' setup>
-import { computed, onBeforeMount, onBeforeUnmount, reactive, ref } from 'vue';
+import { computed, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { More as MoreIcon, CloseSmall } from '@icon-park/vue-next';
 import DialogItem from './components/DialogItem.vue';
 import ContentInput from './components/ContentInput.vue';
 import RoleList from './components/RoleList.vue';
-import { IDialog } from '@/types/Dialog';
+import { ISection } from '@/types/Dialog';
 import { IRole } from '@/types/Role';
 import bus from '@/utils/eventBus';
 import { useDialogStore } from '@/store/dialog';
@@ -58,12 +58,13 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const props = defineProps<{
-    bookId: string
+    bookId: string,
+    chapterId: string
 }>();
 
 const dialogStore = useDialogStore();
 const { currentAction } = storeToRefs(dialogStore);
-const dataList = computed((): IDialog[] => dialogStore.$state.dialogList);
+const dataList = computed((): ISection[] => dialogStore.$state.dialogList);
 
 /** 编辑，插入处理 */
 const modifyAction = ['edit', 'upInsert', 'downInsert'];
@@ -78,14 +79,15 @@ const onCloseAction = () => {
     dialogStore.$state.currentAction = 'insert';
 };
 
+onMounted(() =>  {
+    dialogStore.currentChapterId = props.chapterId;
+})
+
 
 const onClose = () => {
-    console.log(props.bookId)
+    console.log(props.chapterId)
     router.push({
         name: 'BookDetail',
-        params: {
-            id: props.bookId
-        }
     })
 };
 </script>

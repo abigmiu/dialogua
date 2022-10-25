@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateChapterDto } from 'src/dto/chapter.dto';
 import { IdParam } from 'src/dto/param.dto';
@@ -15,6 +15,14 @@ export class ChapterController {
     })
     create(@Param() param: IdParam, @Body() body: CreateChapterDto) {
         return this.chapterService.create(+param.id, body);
+    }
+
+    @Get('list/:id')
+    @ApiOperation({
+        summary: '获取本书全部章节',
+    })
+    list(@Param() param: IdParam) {
+        return this.chapterService.list(param.id);
     }
 
     @Put(':id')

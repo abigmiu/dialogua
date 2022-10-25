@@ -9,12 +9,12 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { IDialog } from '@/types/Dialog';
+import { ISection } from '@/types/Dialog';
 import { ref } from 'vue';
 import { ImagePreview } from 'vant';
 
 const props = defineProps<{
-    source: IDialog;
+    source: ISection;
 }>();
 
 const isLongPic = ref(false);

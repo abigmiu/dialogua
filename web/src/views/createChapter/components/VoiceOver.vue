@@ -9,10 +9,10 @@
 </template>
 <script lang="ts" setup>
 import EditTooltip from './EditTooltip.vue';
-import type { IDialog } from '@/types/Dialog';
+import type { ISection } from '@/types/Dialog';
 
 const props = defineProps<{
-    source: IDialog;
+    source: ISection;
 }>();
 </script>
 <style lang="scss" scoped>

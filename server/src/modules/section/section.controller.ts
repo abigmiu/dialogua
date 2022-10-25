@@ -34,15 +34,18 @@ export class SectionController {
     }
 
     @ApiOperation({
-        summary: '插入',
+        summary: '向前插入',
     })
-    @Post('insert/:id')
+    @Post('insertBefore/:id')
     insert(@Param() param: IdParam, @Body() dto: SectionCreateDto) {
-        if (dto.type === 'INSERT_AFTER') {
-            return this.sectionService.insertAfter(+param.id, dto);
-        }
-        if (dto.type === 'INSERT_BEFORE') {
-            return this.sectionService.insertBefore(+param.id, dto);
-        }
+        return this.sectionService.insertBefore(+param.id, dto);
+    }
+
+    @ApiOperation({
+        summary: '向后插入',
+    })
+    @Post('insertAfter/:id')
+    insetAfter(@Param() param: IdParam, @Body() dto: SectionCreateDto) {
+        return this.sectionService.insertAfter(+param.id, dto);
     }
 }

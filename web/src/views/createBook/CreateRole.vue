@@ -47,7 +47,7 @@ import { computed, reactive, ref } from 'vue';
 import { Plus as PlusIcon } from '@icon-park/vue-next';
 import RoleEditor from './components/RoleEditor.vue';
 import RoleItem from './components/RoleItem.vue';
-import type { IRole } from '@/types/Role';
+import type { ICreateRole, IRole } from '@/types/Role';
 import { http } from '@/utils/http';
 import { useRequest } from 'vue-request';
 import { useRoute, useRouter } from 'vue-router';
@@ -59,7 +59,7 @@ const bookId = Number(route.params.bookId as string);
 const editorVisible = ref(false);
 const activeType = ref<'add' | 'edit'>('add');
 
-const roleData = ref<IRole>({
+const roleData = ref<ICreateRole>({
     name: '',
     avatar: '',
     side: 1,
@@ -74,7 +74,7 @@ const roleList = computed(() => {
     return reactive(data.value);
 });
 
-const createRole = (side: number) => {
+const createRole = (side: 1 | 2) => {
     roleData.value = {
         name: '',
         avatar: '',
@@ -104,15 +104,7 @@ const onConfirm = (data: IRole) => {
 
 /** 返回 */
 const onBack = async () => {
-    await router.replace({
-        name: 'CreateChapter',
-        params: {
-            bookId: bookId,
-        },
-        query: {
-            newChapter: true,
-        },
-    });
+    await router.go(-1);
 };
 /** 保存
  *  如果是新建数据跳到编写新章节
@@ -128,7 +120,7 @@ const onSave = async () => {
             bookId: bookId,
         },
         query: {
-            newChapter: true,
+            newChapter: 'true',
         },
     });
     

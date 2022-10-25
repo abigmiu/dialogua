@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ISectionOperateType } from 'src/types/section';
+import { ISectionOperateType, ISectionSide } from 'src/types/section';
 
 export class SectionCreateDto {
     @ApiProperty({
@@ -13,9 +13,10 @@ export class SectionCreateDto {
     content: string;
 
     @ApiProperty({
-        description: '类型',
+        description: ' 0 是旁白， 1 是 左边， 2是右边',
+        enum: [0, 1, 2],
     })
-    type: ISectionOperateType;
+    side: ISectionSide;
 }
 
 export class UpdateSectionDto {

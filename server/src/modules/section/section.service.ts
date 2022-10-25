@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChapterEntity } from 'src/db/chapter.entity';
 import { SectionEntity } from 'src/db/section.entity';
 import { SectionCreateDto, UpdateSectionDto } from 'src/dto/section.dto';
-import { badReq, BOOK_NOT_EXIT } from 'src/expection';
+import { badReq, BOOK_NOT_EXIT, SECTION_NOT_EXIT } from 'src/expection';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
@@ -33,7 +33,15 @@ export class SectionService {
         section.content = dto.content;
         section.roleId = dto.roleId;
 
-        await this.sectionRepo.save(section);
+        const lastOrder = exitChapter.order_count;
+        section.order = lastOrder + 1;
+        exitChapter.order_count += 1;
+        await this.chapterRepo.save(exitChapter);
+
+        const res = await this.sectionRepo.save(section);
+        return {
+            id: res.id,
+        };
     }
 
     async edit(sectionId: number, dto: UpdateSectionDto) {
@@ -43,8 +51,9 @@ export class SectionService {
                 del: false,
             },
         });
+        console.log(exitSection);
 
-        if (!exitSection) return badReq(BOOK_NOT_EXIT);
+        if (!exitSection) return badReq(SECTION_NOT_EXIT);
 
         exitSection.content = dto.content;
 
@@ -59,7 +68,7 @@ export class SectionService {
             },
         });
 
-        if (!exitSection) return badReq(BOOK_NOT_EXIT);
+        if (!exitSection) return badReq(SECTION_NOT_EXIT);
 
         exitSection.del = true;
         await this.sectionRepo.save(exitSection);
@@ -76,23 +85,12 @@ export class SectionService {
 
         if (!exitSection) return badReq(BOOK_NOT_EXIT);
 
-        const chapter = new ChapterEntity();
-        chapter.id = exitSection.chapter.id;
-
         const section = new SectionEntity();
         section.content = dto.content;
         section.roleId = dto.roleId;
-        section.chapter = chapter;
+        section.order = exitSection.order - 0.01;
 
-        const sectionRes = await this.sectionRepo.save(section);
-        const id = sectionRes.id;
-
-        const chapterSectionIds = exitSection.chapter.sections;
-        const index = chapterSectionIds.findIndex((id) => id === id);
-        chapterSectionIds.splice(index - 1, id);
-
-        chapter.sections = chapterSectionIds;
-        await this.chapterRepo.save(chapter);
+        await this.sectionRepo.save(section);
     }
 
     async insertAfter(sectionId: number, dto: SectionCreateDto) {
@@ -106,22 +104,23 @@ export class SectionService {
 
         if (!exitSection) return badReq(BOOK_NOT_EXIT);
 
-        const chapter = new ChapterEntity();
-        chapter.id = exitSection.chapter.id;
-
         const section = new SectionEntity();
         section.content = dto.content;
         section.roleId = dto.roleId;
-        section.chapter = chapter;
+        section.order = exitSection.order + 0.01;
 
-        const sectionRes = await this.sectionRepo.save(section);
-        const id = sectionRes.id;
+        const chapter = await this.sectionRepo.findOne({
+            where: {
+                id: sectionId,
+            },
+            relations: ['chapter'],
+        });
+        const lastOrder = chapter.id;
+        if (lastOrder <= exitSection.order) {
+            chapter.order = section.id;
+            await this.sectionRepo.save(section);
+        }
 
-        const chapterSectionIds = exitSection.chapter.sections;
-        const index = chapterSectionIds.findIndex((id) => id === id);
-        chapterSectionIds.splice(index, id);
-
-        chapter.sections = chapterSectionIds;
-        await this.chapterRepo.save(chapter);
+        await this.sectionRepo.save(section);
     }
 }

@@ -6,7 +6,9 @@ import { ChapterEntity } from './chapter.entity';
     name: 'section',
 })
 export class SectionEntity extends CustomBaseEntity {
-    @Column()
+    @Column({
+        type: 'float',
+    })
     roleId: number;
 
     @Column()

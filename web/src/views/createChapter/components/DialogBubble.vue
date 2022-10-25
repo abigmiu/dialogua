@@ -1,7 +1,7 @@
 <template>
     <div
         class="flex dialog-wrapper"
-        :class="{ 'right-bubble': source.side === 'right' }"
+        :class="{ 'right-bubble': source.side === 2 }"
     >
         <div class="avatar">
             <img :src="source.roleAvatar" alt="" />
@@ -18,10 +18,10 @@
 <script lang="ts" setup>
 import TextBubble from './TextBubble.vue';
 import EditTooltip from './EditTooltip.vue';
-import type { IDialog } from '@/types/Dialog';
+import type { ISection } from '@/types/Dialog';
 
 const props = defineProps<{
-    source: IDialog;
+    source: ISection;
 }>();
 </script>
 <style lang="scss" scoped>

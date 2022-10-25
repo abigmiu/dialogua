@@ -73,9 +73,6 @@ const onSettingRole = () => {
         }
     })
 }
-
-
-initRoles()
 </script>
 <style lang="scss" scoped>
 .role-list {

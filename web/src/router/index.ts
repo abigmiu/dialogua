@@ -25,7 +25,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/createBook/CreateRole.vue'),
     },
     {
-        path: '/create-chapter/:bookId',
+        path: '/create-chapter/:bookId/:chapterId',
         name: 'CreateChapter',
         props: true,
         component: () => import('@/views/createChapter/Index.vue'),

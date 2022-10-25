@@ -13,13 +13,13 @@ export class ChapterEntity extends CustomBaseEntity {
     })
     title: string;
 
-    @Column({
-        type: 'simple-array',
-    })
-    content: ISection[];
-
     @Column()
     text_count: number;
+
+    @Column({
+        default: 0,
+    })
+    order_count: number;
 
     @ManyToOne(() => BookEntity, (book) => book.chapters)
     book: BookEntity;

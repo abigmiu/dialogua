@@ -41,7 +41,7 @@
 import { reactive, ref, watch } from 'vue';
 import { Dialog, Toast } from 'vant';
 import type { UploaderFileListItem } from 'vant';
-import type { IRole } from '@/types/Role';
+import type { ICreateRole, IRole } from '@/types/Role';
 import { http } from '@/utils/http';
 import { useRouter, useRoute } from 'vue-router';
 
@@ -53,7 +53,7 @@ const id = Number(params.bookId as string);
 
 const props = defineProps<{
     visible: Boolean;
-    roleData: IRole;
+    roleData: ICreateRole;
     activeType: 'add' | 'edit';
 }>();
 const emits = defineEmits<{
@@ -84,7 +84,7 @@ const roleData = reactive({
     avatar: '',
     name: '',
     intro: '',
-    side: 'left',
+    side: 0,
     type: 'text',
 });
 watch(

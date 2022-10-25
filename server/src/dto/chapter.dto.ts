@@ -13,11 +13,4 @@ export class CreateChapterDto {
         message: '标题 1 - 20 字',
     })
     title: string;
-
-    @ApiProperty({
-        description: '内容',
-        isArray: true,
-        type: SectionCreateDto,
-    })
-    content: ISection[];
 }

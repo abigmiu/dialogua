@@ -31,18 +31,16 @@ export class ChapterService {
         book.id = bookId;
         chapter.book = book;
 
-        let textCount = 0;
-        body.content.forEach((item) => {
-            textCount += item.content.trim().length;
-        });
-
-        chapter.content = body.content;
         chapter.title = body.title;
-        chapter.text_count = textCount;
+        chapter.text_count = 0;
 
         try {
-            await this.chapterRepo.save(chapter);
-        } catch {
+            const res = await this.chapterRepo.save(chapter);
+            return {
+                id: res.id,
+            };
+        } catch (e) {
+            console.log(e);
             return badReq(CREATE_FAIL);
         }
     }
@@ -53,14 +51,18 @@ export class ChapterService {
         if (dto.title) {
             chapter.title = dto.title;
         }
-        if (dto.content) {
-            chapter.content = dto.content;
-            let textCount = 0;
-            dto.content.forEach((item) => {
-                textCount += item.content.trim().length;
-            });
-            chapter.text_count = textCount;
-        }
         await this.chapterRepo.save(chapter);
+    }
+
+    async list(bookId: number) {
+        const res = await this.chapterRepo.find({
+            where: {
+                book: {
+                    id: bookId,
+                },
+            },
+        });
+
+        return res;
     }
 }

@@ -9,9 +9,10 @@ interface IState {
 
 const voiceRole: IRole = {
     id: 0,
-    type: 'voiceover',
+    side: 0,
     avatar: '',
     name: '',
+    intro: '',
 };
 
 export const useRoleStore = defineStore('role', {
