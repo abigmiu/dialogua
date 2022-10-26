@@ -131,4 +131,16 @@ export class SectionService {
             id: res.id,
         };
     }
+
+    async list(chapterId: number) {
+        const res = await this.sectionRepo.find({
+            where: {
+                chapter: {
+                    id: chapterId,
+                    del: false,
+                },
+            },
+        });
+        return res;
+    }
 }

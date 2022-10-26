@@ -18,7 +18,7 @@
                 <dialog-item
                     class='mt-4 mb-4'
                     v-for='item in dataList'
-                    :key='item.renderId'
+                    :key='item.id'
                     :source='item'
                 ></dialog-item>
             </div>
@@ -38,7 +38,10 @@
                 />
             </div>
             <content-input></content-input>
-            <role-list :book-id='bookId'></role-list>
+            <role-list
+                :book-id='bookId'
+                @roles-ready="onFetchSections"
+            ></role-list>
         </div>
     </div>
 </template>
@@ -49,11 +52,12 @@ import DialogItem from './components/DialogItem.vue';
 import ContentInput from './components/ContentInput.vue';
 import RoleList from './components/RoleList.vue';
 import { ISection } from '@/types/Dialog';
-import { IRole } from '@/types/Role';
-import bus from '@/utils/eventBus';
 import { useDialogStore } from '@/store/dialog';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import { http } from '@/utils/http';
+import { useRequest } from 'vue-request';
+import { useRoleStore } from '@/store/role';
 
 const router = useRouter();
 
@@ -61,6 +65,8 @@ const props = defineProps<{
     bookId: string,
     chapterId: string
 }>();
+
+const roleStore = useRoleStore();
 
 const dialogStore = useDialogStore();
 const { currentAction } = storeToRefs(dialogStore);
@@ -83,9 +89,32 @@ onMounted(() =>  {
     dialogStore.currentChapterId = props.chapterId;
 })
 
+const fetchData = () => http.get<ISection[]>(`section/list/${props.chapterId}`)
+const { run  } = useRequest(fetchData, {
+    manual: true,
+})
+const onFetchSections = async () => {
+    const res = await run()
+    if (res) {
+        const roles = roleStore.roleList;
+        res.forEach(section => {
+            if (section.roleId === 0) {
+                section.side = 0;
+                return;
+            }
+            const index = roles.findIndex((role) => role.id === section.roleId);
+            if (index !== -1) {
+                section.roleAvatar = roles[index].avatar;
+                section.roleName = roles[index].name;
+                section.side = roles[index].side;
+            }
+        })
+        dialogStore.dialogList = res;
+    }
+}
+
 
 const onClose = () => {
-    console.log(props.chapterId)
     router.push({
         name: 'BookDetail',
     })

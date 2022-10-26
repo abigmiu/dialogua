@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { IdParam } from 'src/dto/param.dto';
 import { SectionCreateDto, UpdateSectionDto } from 'src/dto/section.dto';
@@ -47,5 +47,13 @@ export class SectionController {
     @Post('insertAfter/:id')
     insetAfter(@Param() param: IdParam, @Body() dto: SectionCreateDto) {
         return this.sectionService.insertAfter(+param.id, dto);
+    }
+
+    @ApiOperation({
+        summary: '章节段落列表',
+    })
+    @Get('list/:id')
+    list(@Param() param: IdParam) {
+        return this.sectionService.list(param.id);
     }
 }

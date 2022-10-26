@@ -1,7 +1,12 @@
 <!-- 对话框编辑菜单 -->
 <template>
     <div class="editor-wrapper" @click="onHandlePosition" ref="iconRef">
-        <van-popover v-model:show="showPopover" theme="dark" :placement="placement">
+        <van-popover
+            v-model:show="showPopover"
+            theme="dark"
+            :placement="placement"
+            @close="onClose"
+        >
             <div class="actions">
                 <div class="action-item" @click="onSelect('edit')">
                     <div>
@@ -62,6 +67,15 @@ const showPopover = ref(false);
 const placement = ref<PopoverPlacement>('bottom');
 
 const iconRef = ref<HTMLElement>();
+
+let closeFlag = false;
+const onClose = () => {
+    if (!closeFlag) {
+        dialogStore.activeSectionId = 0;
+    }
+}
+
+
 /** 处理 toolTip 位置 */
 /** 不在 mounted 的时候处理是考虑后续可能有图片存在的情况
  * 图片没加载完不知道宽度
@@ -118,8 +132,8 @@ const onSelect = (actions: IEditAction) => {
     // 这里点击后不自动收回，原因不知， 手动处理下
     showPopover.value = false;
 };
-const onDelete = () => {
-    Dialog.confirm({
+const onDelete = async () => {
+    await Dialog.confirm({
         message: '确定删除这条内容吗？',
         beforeClose: async (action) => {
             if (action === 'confirm') {
@@ -134,8 +148,9 @@ const onDelete = () => {
             return true;
         }
     })
+    dialogStore.activeSectionId = 0;
 };
-const onEdit = () => {
+const onEdit = async () => {
     dialogStore.$state.currentAction = 'edit';
     roleStore.changeActiveRoleId(props.source.roleId);
 };

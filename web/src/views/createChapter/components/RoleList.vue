@@ -2,17 +2,9 @@
     <div class="relative role-list-wrapper">
         <div class="role-list">
             <setting-role @click="onSettingRole"></setting-role>
-            <voice-over
-                @click="onChangeRole(0)"
-                :class="{ active: activeRoleId === 0 }"
-            ></voice-over>
-            <role-item
-                v-for="item in roleList"
-                :key="item.id"
-                :source="item"
-                :class="{ active: activeRoleId === item.id }"
-                @changeRole="onChangeRole"
-            ></role-item>
+            <voice-over @click="onChangeRole(0)" :class="{ active: activeRoleId === 0 }"></voice-over>
+            <role-item v-for="item in roleList" :key="item.id" :source="item"
+                :class="{ active: activeRoleId === item.id }" @changeRole="onChangeRole"></role-item>
         </div>
         <div class="spread">
             <down-icon theme="outline" size="16" fill="#333" />
@@ -39,11 +31,14 @@ const router = useRouter()
 const props = defineProps<{
     bookId: string
 }>()
+const emits = defineEmits<{
+    (e: 'roles-ready'): void
+}>()
 
 const roleStore = useRoleStore()
 const dialogStore = useDialogStore()
 
-const { activeRoleId, roleList }  = storeToRefs(roleStore)
+const { activeRoleId, roleList } = storeToRefs(roleStore)
 const { currentAction } = storeToRefs(dialogStore)
 
 const onChangeRole = (id: number) => {
@@ -58,10 +53,11 @@ onMounted(() => {
     initRoles([])
 })
 const fetchData = () => http.get<IRole[]>(`book-role/list/${props.bookId}`)
-const { data } = useRequest(fetchData) 
+const { data } = useRequest(fetchData)
 watch(data, () => {
     if (!data.value) return;
     initRoles(data.value)
+    emits('roles-ready')
 })
 
 // TODO:
@@ -79,12 +75,14 @@ const onSettingRole = () => {
     &-wrapper {
         padding-right: 25px;
     }
+
     display: flex;
     margin-top: 10px;
     flex-wrap: nowrap;
     overflow-y: scroll;
     position: relative;
 }
+
 .spread {
     position: absolute;
     right: 0;
