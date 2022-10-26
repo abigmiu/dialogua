@@ -1,6 +1,6 @@
 <template>
     <div class='user-book'>
-        <div class='flex justify-between'>
+        <div class='flex justify-between mb-2'>
             <span>我的作品</span>
         </div>
         <div class='book-list'>
@@ -11,7 +11,7 @@
                  @click='onDetail(item.id)'
             >
                 <div class='cover'>
-
+                    <img :src="item.cover" alt="">
                 </div>
                 <div class='title'>{{ item.title }}</div>
             </div>
@@ -56,5 +56,28 @@ const onDetail = (id: number) => {
 .user-book {
     margin-top: 20px;
     font-size: 14px;
+}
+.book-list {
+    display: flex;
+    overflow-x: scroll;
+    &__item {
+        margin-right: 5px;
+        .cover img {
+            width: 80px;
+            height: 120px;
+        }
+
+        .title {
+            margin-top: 5px;
+            font-size: 10px;
+            overflow: hidden;
+            /*将对象作为弹性伸缩盒子模型显示*/
+            display: -webkit-box;
+            /*设置子元素排列方式*/
+            -webkit-box-orient: vertical;
+            /*设置显示的行数，多出的部分会显示为...*/
+            -webkit-line-clamp: 2;
+        }
+    }
 }
 </style>
