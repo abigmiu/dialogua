@@ -43,6 +43,7 @@ const config: IAppConfig = {
             port: 6379,
         },
     },
+    serverHost: 'http://localhost:3008/api',
 };
 
 export default config;

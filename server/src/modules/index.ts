@@ -5,6 +5,7 @@ import { ChapterModule } from './chapter/chapter.module';
 import { RoleModule } from './role/role.module';
 import { SectionModule } from './section/section.module';
 import { AuthModule } from './auth/auth.module';
+import { UploadModule } from './upload/upload.module';
 
 const modules = [
     AuthModule,
@@ -14,6 +15,7 @@ const modules = [
     ChapterModule,
     RoleModule,
     SectionModule,
+    UploadModule,
 ];
 
 export default modules;

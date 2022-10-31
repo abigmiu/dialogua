@@ -7,12 +7,13 @@ import { TransformInterceptor } from './interceptor/transform.interceptor';
 import { GlobalExceptionFilter } from './filter/otherException.filter';
 import { HttpExceptionFilter } from './filter/httpException.filter';
 import { ClassSerializerInterceptor } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 declare const module: any;
 
-
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, {
+    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         logger: ['error', 'warn'],
     });
 
@@ -23,6 +24,11 @@ async function bootstrap() {
 
     const config = app.get(ConfigService);
     app.setGlobalPrefix(config.get('prefix'));
+
+    app.useStaticAssets(join(__dirname, '../upload'), {
+        prefix: `${config.get('prefix')}/upload`,
+    });
+
     const enableSwagger = config.get('enableSwagger');
     if (enableSwagger) {
         const options = new DocumentBuilder()
@@ -41,7 +47,7 @@ async function bootstrap() {
     if (module.hot) {
         module.hot.accept();
         module.hot.dispose(() => app.close());
-      }
+    }
 }
 
 bootstrap();

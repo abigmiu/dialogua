@@ -8,4 +8,5 @@ export interface IAppConfig {
     prefix: string;
     jwtSecret: string;
     redis: RedisModuleOptions;
+    serverHost: string;
 }
