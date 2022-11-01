@@ -40,6 +40,7 @@
             <content-input></content-input>
             <role-list
                 :book-id='bookId'
+                :chapterId="chapterId"
                 @roles-ready="onFetchSections"
             ></role-list>
         </div>

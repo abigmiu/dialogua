@@ -24,7 +24,9 @@ export class ChapterService {
             },
         });
 
-        if (!bookExit) return badReq(BOOK_NOT_EXIT);
+        if (!bookExit) {
+            badReq(BOOK_NOT_EXIT);
+        }
 
         const chapter = new ChapterEntity();
         const book = new BookEntity();
@@ -41,7 +43,7 @@ export class ChapterService {
             };
         } catch (e) {
             console.log(e);
-            return badReq(CREATE_FAIL);
+            badReq(CREATE_FAIL);
         }
     }
 

@@ -9,5 +9,6 @@ import { ChapterEntity } from 'src/db/chapter.entity';
     imports: [TypeOrmModule.forFeature([BookEntity, ChapterEntity])],
     controllers: [ChapterController],
     providers: [ChapterService],
+    exports: [ChapterService],
 })
 export class ChapterModule {}

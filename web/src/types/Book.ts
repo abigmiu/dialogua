@@ -10,4 +10,5 @@ export interface ICreateBook {
 
 export interface ICreateBookResponse {
     id: number;
+    chapterId: number;
 }

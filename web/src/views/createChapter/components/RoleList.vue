@@ -2,9 +2,17 @@
     <div class="relative role-list-wrapper">
         <div class="role-list">
             <setting-role @click="onSettingRole"></setting-role>
-            <voice-over @click="onChangeRole(0)" :class="{ active: activeRoleId === 0 }"></voice-over>
-            <role-item v-for="item in roleList" :key="item.id" :source="item"
-                :class="{ active: activeRoleId === item.id }" @changeRole="onChangeRole"></role-item>
+            <voice-over
+                @click="onChangeRole(0)"
+                :class="{ active: activeRoleId === 0 }"
+            ></voice-over>
+            <role-item
+                v-for="item in roleList"
+                :key="item.id"
+                :source="item"
+                :class="{ active: activeRoleId === item.id }"
+                @changeRole="onChangeRole"
+            ></role-item>
         </div>
         <div class="spread">
             <down-icon theme="outline" size="16" fill="#333" />
@@ -30,6 +38,7 @@ const router = useRouter()
 
 const props = defineProps<{
     bookId: string
+    chapterId: string
 }>()
 const emits = defineEmits<{
     (e: 'roles-ready'): void
@@ -66,6 +75,9 @@ const onSettingRole = () => {
         name: 'CreateRole',
         params: {
             bookId: props.bookId,
+        },
+        query: {
+            chapterId: props.chapterId
         }
     })
 }

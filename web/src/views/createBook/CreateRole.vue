@@ -106,21 +106,17 @@ const onConfirm = (data: IRole) => {
 const onBack = async () => {
     await router.go(-1);
 };
-/** 保存
- *  如果是新建数据跳到编写新章节
- */
+/** 保存 */
 
 const saveLoading = ref(false);
 const onSave = async () => {
     if (saveLoading.value) return;
-    const { createChapter } = route.query;
+    const { chapterId } = route.query;
     await router.replace({
         name: 'CreateChapter',
         params: {
             bookId: bookId,
-        },
-        query: {
-            newChapter: 'true',
+            chapterId: chapterId as string,
         },
     });
     

@@ -61,6 +61,7 @@ const onDetail = (id: number) => {
     &__item {
         margin-right: 5px;
         width: 80px;
+        flex-shrink: 0;
         .cover {
             width: 100%;
             height: 120px;

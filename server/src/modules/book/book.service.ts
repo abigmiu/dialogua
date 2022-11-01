@@ -5,12 +5,14 @@ import { UserEntity } from 'src/db/user.entity';
 import { BookListDto, CreateBookDto } from 'src/dto/book.dto';
 import { badReq, CREATE_FAIL, SAME_BOOK_NAME } from 'src/expection';
 import { LessThan, Repository } from 'typeorm';
+import { ChapterService } from '../chapter/chapter.service';
 
 @Injectable()
 export class BookService {
     constructor(
         @InjectRepository(BookEntity)
         private readonly bookRepo: Repository<BookEntity>,
+        private readonly chapterService: ChapterService,
     ) {}
 
     async create(userId: number, createBookDto: CreateBookDto) {
@@ -35,8 +37,12 @@ export class BookService {
 
         try {
             const res = await this.bookRepo.save(book);
+            const chapter = await this.chapterService.create(res.id, {
+                title: '第一话',
+            });
             return {
                 id: res.id,
+                chapterId: chapter.id,
             };
         } catch {
             return badReq(CREATE_FAIL);
@@ -67,6 +73,9 @@ export class BookService {
         const res = await this.bookRepo
             .createQueryBuilder('book')
             .where(`book.userId = ${userId}`)
+            .orderBy({
+                id: 'DESC',
+            })
             .getMany();
         return res;
     }

@@ -91,8 +91,10 @@ const onSubmit = async () => {
             name: 'CreateRole',
             params: {
                 bookId: res.id,
+                
             },
             query: {
+                chapterId: res.chapterId,
                 createChapter: 'true',
             }
         });
