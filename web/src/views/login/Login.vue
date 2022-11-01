@@ -3,6 +3,7 @@
         <van-field placeholder="邮箱" v-model.trim="formData.email"></van-field>
         <van-field
             placeholder="密码"
+            type="password"
             v-model.trim="formData.password"
         ></van-field>
         <van-button
@@ -17,6 +18,8 @@
         <van-button style="margin-top: 20px" block @click="onCancel">
             取消
         </van-button>
+
+        <div class="mt-5" @click="onRegister">立即注册</div>
     </div>
 </template>
 
@@ -52,4 +55,9 @@ const onSubmit = async () => {
 const onCancel = () => {
     router.back();
 };
+const onRegister = () => {
+    router.push({
+        name: 'Register'
+    })
+}
 </script>

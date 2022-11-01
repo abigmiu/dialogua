@@ -5,11 +5,7 @@
         </div>
         <div class='book-list'>
             <van-loading v-if='loading'></van-loading>
-            <div class='book-list__item'
-                 v-for='item in data'
-                 :key='item.id'
-                 @click='onDetail(item.id)'
-            >
+            <div class='book-list__item' v-for='item in data' :key='item.id' @click='onDetail(item.id)'>
                 <div class='cover'>
                     <img :src="item.cover" alt="">
                 </div>
@@ -57,15 +53,25 @@ const onDetail = (id: number) => {
     margin-top: 20px;
     font-size: 14px;
 }
+
 .book-list {
     display: flex;
     overflow-x: scroll;
+
     &__item {
         margin-right: 5px;
-        .cover img {
-            width: 80px;
+        width: 80px;
+        .cover {
+            width: 100%;
             height: 120px;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
         }
+
 
         .title {
             margin-top: 5px;
