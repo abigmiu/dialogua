@@ -1,6 +1,14 @@
+interface ICutRatio {
+    width: number;
+    height: number;
+}
+
 
 /** 裁剪图片 */
-export function cropperBookCover(file: File): Promise<File> {
+export function cropperImage(file: File, ratio: ICutRatio = {
+    width: 2,
+    height: 3,
+}): Promise<File> {
     const blob = new Blob([file]);
     const blobLink = window.URL.createObjectURL(blob);
 
@@ -10,7 +18,7 @@ export function cropperBookCover(file: File): Promise<File> {
             window.URL.revokeObjectURL(blobLink);
 
             try {
-                const file = await cut(img);
+                const file = await cut(img, ratio);
                 resolve(file);
             } catch {
                 reject('裁剪封面图失败')
@@ -20,11 +28,12 @@ export function cropperBookCover(file: File): Promise<File> {
     })
 }
 
-function cut(img: HTMLImageElement): Promise<File> {
+
+function cut(img: HTMLImageElement, ratio: ICutRatio): Promise<File> {
     const { width, height } = img
 
-    const unit = height / 3;
-    const acceptWidth = unit * 2;
+    const unit = height / ratio.height;
+    const acceptWidth = unit * ratio.width;
     const sliceX = (width - acceptWidth) / 2;
 
     const canvas = document.createElement('canvas');

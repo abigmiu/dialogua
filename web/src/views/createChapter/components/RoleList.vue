@@ -20,19 +20,17 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
+
 import VoiceOver from './VoiceOverRole.vue';
 import SettingRole from './SettingRole.vue';
 import RoleItem from './RoleItem.vue';
 import { Down as DownIcon } from '@icon-park/vue-next';
 
 import { useRoleStore } from '@/store/role'
-import { useDialogStore } from '@/store/dialog'
-import { IRole } from '@/types/Role';
-import { http } from '@/utils/http';
-import { useRequest } from 'vue-request';
-import { useRouter } from 'vue-router';
+import { useDialogStore } from '@/store/chapter'
 
 const router = useRouter()
 
@@ -50,26 +48,19 @@ const dialogStore = useDialogStore()
 const { activeRoleId, roleList } = storeToRefs(roleStore)
 const { currentAction } = storeToRefs(dialogStore)
 
+/** 改变角色 */
 const onChangeRole = (id: number) => {
     // 编辑状态不允许改变角色
     if (currentAction.value === 'edit') return
     roleStore.changeActiveRoleId(id);
 }
-const initRoles = (roles: IRole[]) => {
-    roleStore.changeRoleList(roles);
-}
-onMounted(() => {
-    initRoles([])
-})
-const fetchData = () => http.get<IRole[]>(`book-role/list/${props.bookId}`)
-const { data } = useRequest(fetchData)
-watch(data, () => {
-    if (!data.value) return;
-    initRoles(data.value)
+
+onMounted(async () => {
     emits('roles-ready')
 })
 
-// TODO:
+
+// 跳转设置角色
 const onSettingRole = () => {
     router.push({
         name: 'CreateRole',

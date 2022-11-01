@@ -9,6 +9,13 @@ export type IRole = {
     avatar: string;
 }
 
+export interface IActiveRole {
+    roleId: number,
+    side: ISectionSide,
+    roleName: string;
+    roleAvatar: string;
+}
+
 export interface ICreateRole extends Omit<IRole, 'id'> {
     id?: number;
 }

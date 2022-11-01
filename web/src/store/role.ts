@@ -1,23 +1,30 @@
-import { IRole } from '@/types/Role';
+/**
+ * 角色 store
+ */
+
+import { IActiveRole, IRole } from '@/types/Role';
+import { http } from '@/utils/http';
 import { defineStore } from 'pinia';
+import { useDialogStore } from './chapter';
 
 interface IState {
+    currentBookId: string;
     activeRoleId: number;
-    activeRole: IRole;
+    activeRole: IActiveRole;
     roleList: IRole[];
 }
 
-const voiceRole: IRole = {
-    id: 0,
+const voiceRole: IActiveRole = Object.freeze({
     side: 0,
-    avatar: '',
-    name: '',
-    intro: '',
-};
+    roleAvatar: '',
+    roleName: '',
+    roleId: 0,
+});
 
 export const useRoleStore = defineStore('role', {
     state: (): IState => {
         return {
+            currentBookId: '',
             activeRoleId: 0,
             activeRole: voiceRole,
             roleList: [],
@@ -26,21 +33,29 @@ export const useRoleStore = defineStore('role', {
     actions: {
         /** 修改当前选中的角色 */
         changeActiveRoleId(id: number) {
-            this.$state.activeRoleId = id;
+            this.activeRoleId = id;
+
             if (id === 0) {
-                return (this.$state.activeRole = voiceRole);
+                return this.activeRole = voiceRole;
             }
-            const index = this.$state.roleList.findIndex(
-                (item) => item.id === id,
-            );
+
+            const index = this.roleList.findIndex((item) => item.id === id);
             if (index === -1) {
-                console.error(`store role 未找到 id 为 ${id} 的角色`);
-            } else {
-                this.$state.activeRole = this.$state.roleList[index];
+                return console.error(`store role 未找到 id 为 ${id} 的角色`);
             }
+
+            const role = this.roleList[index];
+            this.activeRole = {
+                roleId: role.id,
+                roleAvatar: role.avatar,
+                roleName: role.name,
+                side: role.side
+            };
         },
-        changeRoleList(list: IRole[]) {
-            this.roleList = list;
-        },
+        async fetchRoleList(bookId: string) {
+            const res = await http.get<IRole[]>(`book-role/list/${bookId}`);
+            this.roleList = res;
+            return res;
+        }
     },
 });

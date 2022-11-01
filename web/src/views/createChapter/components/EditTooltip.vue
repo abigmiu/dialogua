@@ -53,7 +53,7 @@ import {
 import { Dialog, Popover, PopoverPlacement } from 'vant';
 
 import type { ISection, IEditAction } from '@/types/Dialog';
-import { useDialogStore } from '@/store/dialog';
+import { useDialogStore } from '@/store/chapter';
 import { useRoleStore } from '@/store/role';
 import { storeToRefs } from 'pinia';
 const dialogStore = useDialogStore();

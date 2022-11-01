@@ -7,7 +7,7 @@ export interface ISection {
     roleName: string;
     roleAvatar: string;
     side: ISectionSide;
-    /** 非角色决定 */
+    /** 对话框内容 */
     id: number;
     content: string;
 }
@@ -15,4 +15,4 @@ export interface ISection {
 export interface ISectionCreate extends Omit<ISection, 'id'> {}
 
 
-export type IEditAction = 'delete' | 'edit' | 'upInsert' | 'downInsert'
+export type ISectionAction = 'delete' | 'edit' | 'upInsert' | 'downInsert' | 'insert'

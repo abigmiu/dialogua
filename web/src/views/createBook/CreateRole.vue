@@ -43,7 +43,7 @@
     </div>
 </template>
 <script lang='ts' setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, onMounted } from 'vue';
 import { Plus as PlusIcon } from '@icon-park/vue-next';
 import RoleEditor from './components/RoleEditor.vue';
 import RoleItem from './components/RoleItem.vue';
@@ -68,11 +68,16 @@ const roleData = ref<ICreateRole>({
 });
 
 const fetchRoleList = () => http.get<IRole[]>(`book-role/list/${bookId}`);
-const { data, loading } = useRequest(fetchRoleList);
+const { data, run } = useRequest(fetchRoleList, {
+    manual: true,
+});
 const roleList = computed(() => {
     if (!data.value) return [];
     return reactive(data.value);
 });
+onMounted(() => {
+    const { bookId } = route.params
+})
 
 const createRole = (side: 1 | 2) => {
     roleData.value = {

@@ -11,7 +11,7 @@
                 <van-uploader
                     v-model='coverFile'
                     :max-count='1'
-                    accept='.jpeg,.jpg,.png'
+                    accept='.jpeg,.jpg,.png' 
                     :max-size='2000 * 1024'
                     @oversize='onOversize'
                     :after-read='onAfterRead'
@@ -40,10 +40,14 @@
 <script lang='ts' setup>
 import { reactive, ref, watch } from 'vue';
 import { Dialog, Toast } from 'vant';
-import type { UploaderFileListItem } from 'vant';
+import { useRoute } from 'vue-router';
+
+import type { UploaderAfterRead } from 'vant/lib/uploader/types';
 import type { ICreateRole, IRole } from '@/types/Role';
+
 import { http } from '@/utils/http';
-import { useRouter, useRoute } from 'vue-router';
+import { uploadFile } from '@/utils/fileUpload';
+import { cropperImage } from '@/utils/cropperImage';
 
 const VanDialog = Dialog.Component;
 
@@ -52,7 +56,7 @@ const params = route.params;
 const id = Number(params.bookId as string);
 
 const props = defineProps<{
-    visible: Boolean;
+    visible: boolean;
     roleData: ICreateRole;
     activeType: 'add' | 'edit';
 }>();
@@ -77,6 +81,7 @@ const onClose = async (action: string) => {
     }
 
     emits('update:visible', false);
+    return false;
 };
 
 const roleData = reactive({
@@ -102,15 +107,21 @@ const coverFile = ref([]);
 const onOversize = () => {
     Toast('文件大小不能超过 2mb');
 };
-const onAfterRead = async (file: UploaderFileListItem) => {
+const onAfterRead: UploaderAfterRead = async (file) => {
+    if (Array.isArray(file) || !file.file) return;
     file.status = 'uploading';
-    const res = await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve('1');
-        }, 2000);
-    });
-    file.status = 'done';
-    roleData.avatar = res as string;
+    try {
+        const submitFile = await cropperImage(file.file, {
+            width: 1,
+            height: 1,
+        })
+        const res = await uploadFile(submitFile);
+        file.file = submitFile;
+        roleData.avatar = res;
+        file.status = 'done';
+    } catch {
+        file.status = 'failed'
+    }
 };
 const onDelete = () => {
     roleData.avatar = '';
@@ -121,7 +132,6 @@ const validateForm = () => {
         Toast('未填写角色名');
         return false;
     }
-
     return true;
 };
 </script>

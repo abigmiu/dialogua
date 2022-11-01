@@ -34,7 +34,7 @@ import { useRouter } from 'vue-router';
 
 import { http } from '@/utils/http';
 import { uploadFile } from '@/utils/fileUpload'
-import { cropperBookCover, generateBookWordCover } from '@/utils/cropperImage'
+import { cropperImage, generateBookWordCover } from '@/utils/cropperImage'
 
 const router = useRouter();
 
@@ -53,7 +53,7 @@ const onAfterRead: UploaderAfterRead = async (file, detail) => {
 
     file.status = 'uploading';
 
-    const cropperFile = await cropperBookCover(file.file);
+    const cropperFile = await cropperImage(file.file);
     const res = await uploadFile(cropperFile);
 
     file.file = cropperFile;

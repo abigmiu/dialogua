@@ -6,7 +6,7 @@
                 <close-small theme='outline' size='24' fill='#333' @click='onClose' />
                 <div class='info'>
                     <div class='title'>第一话</div>
-                    <div class='status'>未发布 0字</div>
+                    <div class='status'>未发布 {{ textCount }} 字</div>
                 </div>
             </template>
             <template #right>
@@ -41,24 +41,24 @@
             <role-list
                 :book-id='bookId'
                 :chapterId="chapterId"
-                @roles-ready="onFetchSections"
             ></role-list>
         </div>
     </div>
 </template>
 <script lang='ts' setup>
-import { computed, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import type { ISection } from '@/types/Dialog';
+
+import { computed, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
+
 import { More as MoreIcon, CloseSmall } from '@icon-park/vue-next';
 import DialogItem from './components/DialogItem.vue';
 import ContentInput from './components/ContentInput.vue';
 import RoleList from './components/RoleList.vue';
-import { ISection } from '@/types/Dialog';
-import { useDialogStore } from '@/store/dialog';
-import { storeToRefs } from 'pinia';
-import { useRouter } from 'vue-router';
-import { http } from '@/utils/http';
-import { useRequest } from 'vue-request';
-import { useRoleStore } from '@/store/role';
+
+import { useDialogStore } from '@/store/chapter';
+import { useBookStore } from '@/store/book';
 
 const router = useRouter();
 
@@ -67,10 +67,19 @@ const props = defineProps<{
     chapterId: string
 }>();
 
-const roleStore = useRoleStore();
+const bookStore = useBookStore();
+onMounted(async () => {
+    const { currentBookId, currentChapterId } = bookStore;
+    if (currentBookId !== props.bookId) {
+        await bookStore.changeBookId(props.bookId);
+    }
+    if (currentChapterId !== props.chapterId) {
+        await bookStore.changeChapterId(props.chapterId);
+    }
+})
 
 const dialogStore = useDialogStore();
-const { currentAction } = storeToRefs(dialogStore);
+const { currentAction, textCount } = storeToRefs(dialogStore);
 const dataList = computed((): ISection[] => dialogStore.$state.dialogList);
 
 /** 编辑，插入处理 */
@@ -85,34 +94,6 @@ const modifyText = computed(() => {
 const onCloseAction = () => {
     dialogStore.$state.currentAction = 'insert';
 };
-
-onMounted(() =>  {
-    dialogStore.currentChapterId = props.chapterId;
-})
-
-const fetchData = () => http.get<ISection[]>(`section/list/${props.chapterId}`)
-const { run  } = useRequest(fetchData, {
-    manual: true,
-})
-const onFetchSections = async () => {
-    const res = await run()
-    if (res) {
-        const roles = roleStore.roleList;
-        res.forEach(section => {
-            if (section.roleId === 0) {
-                section.side = 0;
-                return;
-            }
-            const index = roles.findIndex((role) => role.id === section.roleId);
-            if (index !== -1) {
-                section.roleAvatar = roles[index].avatar;
-                section.roleName = roles[index].name;
-                section.side = roles[index].side;
-            }
-        })
-        dialogStore.dialogList = res;
-    }
-}
 
 
 const onClose = () => {

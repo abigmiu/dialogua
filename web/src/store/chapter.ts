@@ -1,34 +1,41 @@
-import { ISection, ISectionCreate } from '@/types/Dialog';
+import { ISection, ISectionAction, ISectionCreate } from '@/types/Dialog';
+import type { ISectionCreateResponse } from '@/types/Section';
+
 import { defineStore } from 'pinia';
 import { useRoleStore } from './role';
+
 import { http } from '@/utils/http';
-import { ISectionCreateResponse } from '@/types/Section';
+
 
 interface IState {
+    currentBookId: string;
     currentChapterId: string;
     currentContent: string;
     activeSectionId: number;
     activeSection: ISection;
     dialogList: ISection[];
-    currentAction: 'insert' | 'delete' | 'edit' | 'upInsert' | 'downInsert';
+    currentAction: ISectionAction;
+    textCount: number;
 }
 
-export const useDialogStore = defineStore('dialog', {
+export const useDialogStore = defineStore('chapter', {
     state: (): IState => {
         return {
+            currentBookId: '',
             currentChapterId: '',
             currentContent: '',
             activeSectionId: 0,
             activeSection: {
-                id: 0,
                 roleAvatar: '',
                 roleId: 0,
                 roleName: '',
                 side: 0,
+                id: 0,
                 content: '',
             },
             dialogList: [],
             currentAction: 'insert',
+            textCount: 0,
         };
     },
     getters: {
@@ -37,9 +44,30 @@ export const useDialogStore = defineStore('dialog', {
         },
     },
     actions: {
+        /** 获取数据 */
+        async fetchDialog(chapterId: string) {
+            const res = await http.get<ISection[]>(`section/list/${chapterId}`)
+
+            const roleStore = useRoleStore();
+            const roles = roleStore.roleList;
+
+            res.forEach(section => {
+                if (section.roleId === 0) {
+                    section.side = 0;
+                } else {
+                    const index = roles.findIndex((role) => role.id === section.roleId);
+                    if (index !== -1) {
+                        section.roleAvatar = roles[index].avatar;
+                        section.roleName = roles[index].name;
+                        section.side = roles[index].side;
+                    }  
+                }
+            })
+            this.dialogList = res;
+        },
         /** 当前编辑的对话框 ID */
         changeactiveSectionId(value: number) {
-            this.$state.activeSectionId = value;
+            this.activeSectionId = value;
         },
         emptyId() {
             this.activeSectionId = 0;
@@ -63,12 +91,7 @@ export const useDialogStore = defineStore('dialog', {
             const actionType = this.$state.currentAction;
             const roleStore = useRoleStore();
             const role = roleStore.activeRole;
-            const roleData = {
-                roleId: role.id,
-                roleName: role.name,
-                roleAvatar: role.avatar,
-                side: role.side,
-            };
+            const roleData = role
 
 
             switch (actionType) {
@@ -109,6 +132,7 @@ export const useDialogStore = defineStore('dialog', {
             await http.delete(`section/${id}`);
             const index = this.findRenderId();
             if (index === -1) return;
+            this.textCount -= this.dialogList[index].content.length;
             this.$state.dialogList.splice(index, 1);
             this.emptyId();
             this.resetActionToInset();
@@ -124,6 +148,7 @@ export const useDialogStore = defineStore('dialog', {
                 ...data,
                 id: res.id,
             });
+            this.textCount += data.content.length;
             this.emptyContent();
         },
         /** 向前插入 */
@@ -139,6 +164,7 @@ export const useDialogStore = defineStore('dialog', {
                 ...data,
                 id: res.id
             });
+            this.textCount += data.content.length;
             this.$state.currentContent = '';
         },
         /** 向后插入 */
@@ -154,6 +180,7 @@ export const useDialogStore = defineStore('dialog', {
                 ...data,
                 id: res.id
             });
+            this.textCount += data.content.length;
             this.$state.currentContent = '';
         },
         /** 编辑 */
@@ -166,6 +193,7 @@ export const useDialogStore = defineStore('dialog', {
             const index = this.findRenderId();
             if (index !== -1) {
                 this.$state.dialogList.splice(index, 1, data);
+                this.textCount = this.textCount - this.dialogList[index].content.length + data.content.length;
             }
 
             this.emptyContent();

@@ -24,7 +24,7 @@ import { Send as SendIcon } from '@icon-park/vue-next';
 import { Toast } from 'vant';
 import { ref } from 'vue';
 
-import { useDialogStore } from '@/store/dialog';
+import { useDialogStore } from '@/store/chapter';
 import { storeToRefs } from 'pinia';
 const dialogStore = useDialogStore();
 const { currentAction, currentContent } = storeToRefs(dialogStore)
