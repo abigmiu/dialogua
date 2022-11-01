@@ -26,6 +26,7 @@
 <script lang="ts" setup>
 import type { FieldRule } from 'vant'
 import type { UploaderAfterRead } from 'vant/lib/uploader/types';
+import type { ICreateBookResponse } from '@/types/Book';
 
 import { reactive, ref } from 'vue';
 import { Toast } from 'vant';
@@ -33,8 +34,7 @@ import { useRouter } from 'vue-router';
 
 import { http } from '@/utils/http';
 import { uploadFile } from '@/utils/fileUpload'
-import { cropperBookCover } from '@/utils/cropperImage'
-
+import { cropperBookCover, generateBookWordCover } from '@/utils/cropperImage'
 
 const router = useRouter();
 
@@ -67,17 +67,25 @@ const onDelete = () => {
 const nameRule: FieldRule[] = [
     {
         validator: (value: string) => {
-            console.log(value);
-            return !!value.trim();
+            if (!/^[\u4e00-\u9fa50-9A-Za-z0-9]{2,10}$/.test(value)) {
+                return '书本名称为2-10位中英文数字组合'
+            }
+            return true;
         },
-        message: '未填写书名',
-        trigger: 'onSubmit',
+        trigger: 'onBlur',
     },
 ];
 const onSubmit = async () => {
     try {
+        if (!bookData.cover) {
+            const file = await generateBookWordCover(bookData.title)
+            if (file) {
+                bookData.cover = await uploadFile(file);
+            }
+        }
         loading.value = true;
-        const res: any = await http.post('book', bookData);
+
+        const res = await http.post<ICreateBookResponse>('book', bookData);
         Toast('创建成功');
         await router.replace({
             name: 'CreateRole',
