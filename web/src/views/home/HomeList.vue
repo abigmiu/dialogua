@@ -6,7 +6,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted, onActivated } from 'vue'
 import HomeDownList from './components/HomeDownList.vue';
 
 const loading = ref(false)
@@ -16,4 +16,12 @@ const onRefresh = () => {
     },2000)
     console.log('onRefesh');
 }
+
+onMounted(() => {
+    console.log('onMounted')
+})
+onActivated(() => {
+    console.log('abnc');
+})
+
 </script>

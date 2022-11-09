@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { IBook } from '@/types/Book';
 import { http } from '@/utils/http';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, onActivated } from 'vue';
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -56,6 +56,12 @@ const onDetail = (id: number) => {
     })
 }
 
+onMounted(() => {
+    console.log('onMounted')
+})
+onActivated(() => {
+    console.log('abnc');
+})
 
 </script>
 <style lang="scss"  scoped>
