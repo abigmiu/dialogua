@@ -53,13 +53,13 @@ export class BookService {
         let res;
 
         if (dto.lastId) {
-            res = await this.bookRepo.findAndCount({
+            res = await this.bookRepo.find({
                 where: { del: false, id: LessThan(dto.lastId) },
                 take: dto.size,
                 order: { id: 'DESC' },
             });
         } else {
-            res = await this.bookRepo.findAndCount({
+            res = await this.bookRepo.find({
                 where: { del: false },
                 take: dto.size,
                 order: { id: 'DESC' },

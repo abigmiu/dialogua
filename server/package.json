@@ -10,7 +10,7 @@
     "build": "cross-env NODE_ENV=production nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:webpack": "cross-env NODE_ENV=development nest build --webpack --webpackPath webpack.config.js --watch",
+    "start:webpack": "cross-env NODE_ENV=development nest build --watch",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

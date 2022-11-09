@@ -7,3 +7,8 @@
 <script lang="ts" setup>
 import LayoutFooter from '@/components/layout/LayoutFooter.vue'
 </script>
+<style lang="scss">
+.home {
+    padding-bottom: 75px;
+}
+</style>

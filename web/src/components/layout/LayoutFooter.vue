@@ -1,7 +1,7 @@
 <template>
     <div class="footer-wrapper">
         <div class="action-item">
-            <home-icon size="24"></home-icon>
+            <home-icon size="24" @click="onJumpByName('Home.List')"></home-icon>
         </div>
         <div class="action-item" @click="onJumpByName('CreateBook', true)">
             <add-one size="24"></add-one>

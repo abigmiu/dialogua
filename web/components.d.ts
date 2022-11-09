@@ -14,14 +14,17 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     UserCard: typeof import('./src/views/user/components/UserCard.vue')['default']
     VanButton: typeof import('vant/es')['Button']
+    VanCell: typeof import('vant/es')['Cell']
     VanCellGroup: typeof import('vant/es')['CellGroup']
     VanField: typeof import('vant/es')['Field']
     VanForm: typeof import('vant/es')['Form']
     VanIcon: typeof import('vant/es')['Icon']
     VanImage: typeof import('vant/es')['Image']
+    VanList: typeof import('vant/es')['List']
     VanLoading: typeof import('vant/es')['Loading']
     VanNavBar: typeof import('vant/es')['NavBar']
     VanPopover: typeof import('vant/es')['Popover']
+    VanPullRefresh: typeof import('vant/es')['PullRefresh']
     VanUploader: typeof import('vant/es')['Uploader']
   }
 }
