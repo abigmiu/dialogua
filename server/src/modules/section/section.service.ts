@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChapterEntity } from 'src/db/chapter.entity';
 import { SectionEntity } from 'src/db/section.entity';
+import { ChapterPageQuery } from 'src/dto/chapter.dto';
 import { SectionCreateDto, UpdateSectionDto } from 'src/dto/section.dto';
 import { badReq, BOOK_NOT_EXIT, SECTION_NOT_EXIT } from 'src/expection';
+import { handlePageData } from 'src/utils/pager';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
@@ -142,5 +144,23 @@ export class SectionService {
             },
         });
         return res;
+    }
+
+    async page(chapterId: number, query: ChapterPageQuery) {
+        const res = await this.sectionRepo.findAndCount({
+            where: {
+                del: false,
+                chapter: {
+                    id: chapterId,
+                    del: false,
+                },
+            },
+            take: query.size,
+            skip: (query.page - 1) * query.size,
+            order: {
+                sort: 'ASC',
+            },
+        });
+        return handlePageData(res);
     }
 }

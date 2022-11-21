@@ -29,15 +29,16 @@
                 </div>
             </div>
             <template #reference>
-                <pencil-icon theme="outline" size="12" :fill="
-    activeSectionId === source.id ? '#00aff3' : '#333'
+                <pencil-icon theme="outline" size="12" :fill="activeSectionId === source.id ? '#00aff3' : '#333'
                 " class="pencil" />
             </template>
         </van-popover>
     </div>
 </template>
 <script lang="ts" setup>
-import { nextTick, reactive, ref } from 'vue';
+import type { ISection, ISectionAction } from '@/types/Dialog';
+
+import { ref } from 'vue';
 import {
     Pencil as PencilIcon,
     DoubleDown,
@@ -47,11 +48,12 @@ import {
 } from '@icon-park/vue-next';
 import { Dialog, Popover, PopoverPlacement } from 'vant';
 
-import type { ISection, ISectionAction } from '@/types/Dialog';
+import { sectionActionType } from '@/constant';
+
+import { storeToRefs } from 'pinia';
 import { useDialogStore } from '@/store/chapter';
 import { useRoleStore } from '@/store/role';
-import { storeToRefs } from 'pinia';
-import { sectionActionType } from '@/constant';
+
 const dialogStore = useDialogStore();
 const roleStore = useRoleStore();
 const { activeSectionId } = storeToRefs(dialogStore);
@@ -69,7 +71,7 @@ const iconRef = ref<HTMLElement>();
  * 图片没加载完不知道宽度
  */
 const onHandlePosition = () => {
-    dialogStore.$state.activeSectionId = props.source.id;
+    dialogStore.activeSectionId = props.source.id;
     if (!iconRef.value) return;
 
     const { top, left, right, bottom } = iconRef.value.getBoundingClientRect();
@@ -127,7 +129,7 @@ const onDelete = async () => {
                 dialogStore.currentAction = sectionActionType.delete;
                 dialogStore.activeSectionId = props.source.id;
                 try {
-                    await dialogStore.handleAction();
+                    await dialogStore.deleteDialog();
                 } catch {
                     return false;
                 }
@@ -138,15 +140,14 @@ const onDelete = async () => {
 };
 const onEdit = async () => {
     dialogStore.currentAction = sectionActionType.edit;
-    dialogStore.activeSectionId = props.source.id;
     roleStore.changeActiveRoleId(props.source.roleId);
     dialogStore.changeactiveSectionId(props.source.id);
 };
 const onUpInsert = () => {
-    dialogStore.$state.currentAction = sectionActionType.upInsert;
+    dialogStore.currentAction = sectionActionType.upInsert;
 };
 const onDownInsert = () => {
-    dialogStore.$state.currentAction = sectionActionType.downInsert;
+    dialogStore.currentAction = sectionActionType.downInsert;
 };
 </script>
 <style lang="scss" scoped>

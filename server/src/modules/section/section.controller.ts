@@ -1,5 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SectionEntity } from 'src/db/section.entity';
+import { Public } from 'src/decorator/public';
+import { ApiPager } from 'src/decorator/swagger';
+import { ChapterPageQuery } from 'src/dto/chapter.dto';
 import { IdParam } from 'src/dto/param.dto';
 import { SectionCreateDto, UpdateSectionDto } from 'src/dto/section.dto';
 import { SectionService } from './section.service';
@@ -55,5 +59,13 @@ export class SectionController {
     @Get('list/:id')
     list(@Param() param: IdParam) {
         return this.sectionService.list(param.id);
+    }
+
+    @Public()
+    @ApiOperation({ summary: '分页' })
+    @Get('page/:id')
+    @ApiPager(SectionEntity)
+    page(@Param() param: IdParam, @Query() query: ChapterPageQuery) {
+        return this.sectionService.page(param.id, query);
     }
 }

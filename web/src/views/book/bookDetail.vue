@@ -86,10 +86,10 @@ onMounted(() => {
 /** 跳转详情 */
 const onJumpDetail = (chapterId: number) => {
     router.push({
-        name: 'CreateChapter',
+        name: 'ChapterDetail',
         params: {
             bookId: props.id,
-            chapterId: chapterId.toString(),
+            id: chapterId.toString(),
         },
     });
 }

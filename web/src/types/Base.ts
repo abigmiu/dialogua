@@ -3,3 +3,8 @@ export interface IHttpResponse {
     data: any;
     msg: string;
 }
+
+export interface IPageData<T = unknown> {
+    content: T[],
+    total: number;
+}

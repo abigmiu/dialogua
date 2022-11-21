@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateChapterDto } from 'src/dto/chapter.dto';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ChapterPageQuery, CreateChapterDto } from 'src/dto/chapter.dto';
 import { IdParam } from 'src/dto/param.dto';
 import { ChapterService } from './chapter.service';
 import { Public } from 'src/decorator/public';
+import { ChapterEntity } from 'src/db/chapter.entity';
 
 @ApiTags('章节')
 @Controller('chapter')
@@ -33,5 +34,17 @@ export class ChapterController {
     })
     update(@Param() param: IdParam, @Body() body: CreateChapterDto) {
         return this.chapterService.update(param.id, body);
+    }
+
+    @Public()
+    @Get(':id')
+    @ApiOperation({
+        summary: '章节详情',
+    })
+    @ApiResponse({
+        type: ChapterEntity,
+    })
+    detail(@Param() param: IdParam) {
+        return this.chapterService.detail(param.id);
     }
 }

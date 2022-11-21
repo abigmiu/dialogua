@@ -39,6 +39,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/createChapter/Index.vue'),
     },
     {
+        path: '/chapter-detail/:bookId/:id',
+        props: true,
+        name: 'ChapterDetail',
+        component: () => import('@/views/book/chapterDetail.vue'),
+    },
+    {
         path: '/book/detail/:id',
         name: 'BookDetail',
         props: true,

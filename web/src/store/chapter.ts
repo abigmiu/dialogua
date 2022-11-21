@@ -78,9 +78,8 @@ export const useDialogStore = defineStore('chapter', {
         },
         /** 当前编辑的对话框 ID */
         changeactiveSectionId(value: number) {
-            console.log('changeActiveSecionIs', value);
             this.activeSectionId = value;
-            console.log(this.activeSectionId);
+
             const index = this.findRenderId();
             this.activeSection = this.dialogList[index];
             this.currentContent = this.activeSection.content;
@@ -117,10 +116,6 @@ export const useDialogStore = defineStore('chapter', {
                 });
             }
 
-            if (actionType === sectionActionType.delete) {
-                await this.deleteDialog();
-            }
-
             if (actionType === sectionActionType.upInsert) {
                 await this.insertBefore({
                     content: this.$state.currentContent,
@@ -146,12 +141,12 @@ export const useDialogStore = defineStore('chapter', {
         },
         /** 删除一条对话 */
         async deleteDialog() {
-            const id = this.activeSectionId;
-            await http.delete(`section/${id}`);
+            await http.delete(`section/${this.activeSectionId}`);
+
             const index = this.findRenderId();
-            if (index === -1) return;
             this.textCount -= this.dialogList[index].content.length;
-            this.$state.dialogList.splice(index, 1);
+            this.dialogList.splice(index, 1);
+            
             this.emptyId();
             this.resetActionToInset();
         },

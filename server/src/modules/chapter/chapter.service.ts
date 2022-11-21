@@ -16,6 +16,15 @@ export class ChapterService {
         private readonly chapterRepo: Repository<ChapterEntity>,
     ) {}
 
+    async detail(id: number) {
+        const res = await this.chapterRepo.findOne({
+            where: {
+                id,
+            },
+        });
+        return res;
+    }
+
     async create(bookId: number, body: CreateChapterDto) {
         const bookExit = await this.bookRepo.findOne({
             where: {
