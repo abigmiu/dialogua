@@ -1,3 +1,4 @@
+import { sectionActionType } from "@/constant";
 import { ISectionSide } from "./Section";
 
 /** 对话框内容 */
@@ -15,4 +16,4 @@ export interface ISection {
 export interface ISectionCreate extends Omit<ISection, 'id'> {}
 
 
-export type ISectionAction = 'delete' | 'edit' | 'upInsert' | 'downInsert' | 'insert'
+export type ISectionAction = typeof sectionActionType[keyof typeof sectionActionType];

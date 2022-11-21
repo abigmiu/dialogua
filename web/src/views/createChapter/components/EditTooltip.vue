@@ -1,32 +1,27 @@
 <!-- 对话框编辑菜单 -->
 <template>
     <div class="editor-wrapper" @click="onHandlePosition" ref="iconRef">
-        <van-popover
-            v-model:show="showPopover"
-            theme="dark"
-            :placement="placement"
-            @close="onClose"
-        >
+        <van-popover v-model:show="showPopover" theme="dark" :placement="placement">
             <div class="actions">
-                <div class="action-item" @click="onSelect('edit')">
+                <div class="action-item" @click="onSelect(sectionActionType.edit)">
                     <div>
                         <file-editing-one theme="outline" size="16" fill="#fff" />
                     </div>
                     <div>编辑</div>
                 </div>
-                <div class="action-item" @click="onSelect('delete')">
+                <div class="action-item" @click="onSelect(sectionActionType.delete)">
                     <div>
                         <delete-one theme="outline" size="16" fill="#fff" />
                     </div>
                     <div>删除</div>
                 </div>
-                <div class="action-item" @click="onSelect('upInsert')">
+                <div class="action-item" @click="onSelect(sectionActionType.upInsert)">
                     <div>
                         <double-up theme="outline" size="16" fill="#fff" />
                     </div>
                     <div>上插</div>
                 </div>
-                <div class="action-item" @click="onSelect('downInsert')">
+                <div class="action-item" @click="onSelect(sectionActionType.downInsert)">
                     <div>
                         <double-down theme="outline" size="16" fill="#fff" />
                     </div>
@@ -35,7 +30,7 @@
             </div>
             <template #reference>
                 <pencil-icon theme="outline" size="12" :fill="
-                    activeSectionId === source.id ? '#00aff3' : '#333'
+    activeSectionId === source.id ? '#00aff3' : '#333'
                 " class="pencil" />
             </template>
         </van-popover>
@@ -52,10 +47,11 @@ import {
 } from '@icon-park/vue-next';
 import { Dialog, Popover, PopoverPlacement } from 'vant';
 
-import type { ISection, IEditAction } from '@/types/Dialog';
+import type { ISection, ISectionAction } from '@/types/Dialog';
 import { useDialogStore } from '@/store/chapter';
 import { useRoleStore } from '@/store/role';
 import { storeToRefs } from 'pinia';
+import { sectionActionType } from '@/constant';
 const dialogStore = useDialogStore();
 const roleStore = useRoleStore();
 const { activeSectionId } = storeToRefs(dialogStore);
@@ -67,14 +63,6 @@ const showPopover = ref(false);
 const placement = ref<PopoverPlacement>('bottom');
 
 const iconRef = ref<HTMLElement>();
-
-let closeFlag = false;
-const onClose = () => {
-    if (!closeFlag) {
-        dialogStore.activeSectionId = 0;
-    }
-}
-
 
 /** 处理 toolTip 位置 */
 /** 不在 mounted 的时候处理是考虑后续可能有图片存在的情况
@@ -112,22 +100,21 @@ const onHandlePosition = () => {
     }
 };
 
-const onSelect = (actions: IEditAction) => {
-    switch (actions) {
-        case 'delete':
-            onDelete();
-            break;
-        case 'edit':
-            onEdit();
-            break;
-        case 'upInsert':
-            onUpInsert();
-            break;
-        case 'downInsert':
-            onDownInsert();
-            break;
-        default:
-            break;
+const onSelect = (action: ISectionAction) => {
+    if (action === sectionActionType.delete) {
+        onDelete();
+    }
+
+    if (action === sectionActionType.edit) {
+        onEdit();
+    }
+
+    if (action === sectionActionType.upInsert) {
+        onUpInsert();
+    }
+
+    if (action === sectionActionType.downInsert) {
+        onDownInsert();
     }
     // 这里点击后不自动收回，原因不知， 手动处理下
     showPopover.value = false;
@@ -137,28 +124,29 @@ const onDelete = async () => {
         message: '确定删除这条内容吗？',
         beforeClose: async (action) => {
             if (action === 'confirm') {
-                dialogStore.$state.currentAction = 'delete';
-                dialogStore.$state.activeSectionId = props.source.id;
+                dialogStore.currentAction = sectionActionType.delete;
+                dialogStore.activeSectionId = props.source.id;
                 try {
-                    await dialogStore.handleAction();               
+                    await dialogStore.handleAction();
                 } catch {
                     return false;
                 }
-            } 
+            }
             return true;
         }
     })
-    dialogStore.activeSectionId = 0;
 };
 const onEdit = async () => {
-    dialogStore.$state.currentAction = 'edit';
+    dialogStore.currentAction = sectionActionType.edit;
+    dialogStore.activeSectionId = props.source.id;
     roleStore.changeActiveRoleId(props.source.roleId);
+    dialogStore.changeactiveSectionId(props.source.id);
 };
 const onUpInsert = () => {
-    dialogStore.$state.currentAction = 'upInsert';
+    dialogStore.$state.currentAction = sectionActionType.upInsert;
 };
 const onDownInsert = () => {
-    dialogStore.$state.currentAction = 'downInsert';
+    dialogStore.$state.currentAction = sectionActionType.downInsert;
 };
 </script>
 <style lang="scss" scoped>

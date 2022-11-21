@@ -5,6 +5,8 @@ import { defineStore } from 'pinia';
 import { useRoleStore } from './role';
 
 import { http } from '@/utils/http';
+import { sectionActionType } from '@/constant';
+import { useBookStore } from './book';
 
 
 interface IState {
@@ -34,7 +36,7 @@ export const useDialogStore = defineStore('chapter', {
                 content: '',
             },
             dialogList: [],
-            currentAction: 'insert',
+            currentAction: sectionActionType.insert,
             textCount: 0,
         };
     },
@@ -44,6 +46,15 @@ export const useDialogStore = defineStore('chapter', {
         },
     },
     actions: {
+        /** 获取章节 ID */
+        getCurrentChapterId() {
+            if (!this.currentChapterId) {
+                const bookStore = useBookStore();
+                this.currentChapterId = bookStore.currentChapterId;
+            }
+            return this.currentChapterId;
+        },
+
         /** 获取数据 */
         async fetchDialog(chapterId: string) {
             const res = await http.get<ISection[]>(`section/list/${chapterId}`)
@@ -60,14 +71,19 @@ export const useDialogStore = defineStore('chapter', {
                         section.roleAvatar = roles[index].avatar;
                         section.roleName = roles[index].name;
                         section.side = roles[index].side;
-                    }  
+                    }
                 }
             })
             this.dialogList = res;
         },
         /** 当前编辑的对话框 ID */
         changeactiveSectionId(value: number) {
+            console.log('changeActiveSecionIs', value);
             this.activeSectionId = value;
+            console.log(this.activeSectionId);
+            const index = this.findRenderId();
+            this.activeSection = this.dialogList[index];
+            this.currentContent = this.activeSection.content;
         },
         emptyId() {
             this.activeSectionId = 0;
@@ -76,7 +92,7 @@ export const useDialogStore = defineStore('chapter', {
             this.currentContent = '';
         },
         resetActionToInset() {
-            this.currentAction = 'insert';
+            this.currentAction = sectionActionType.edit;
         },
         /** 寻找选中的 id 位于列表的位置 */
         findRenderId() {
@@ -87,43 +103,45 @@ export const useDialogStore = defineStore('chapter', {
             return index;
         },
         /** 处理不同的操作类型 */
-        handleAction() {
-            const actionType = this.$state.currentAction;
+        async handleAction() {
+            const actionType = this.currentAction;
+
             const roleStore = useRoleStore();
             const role = roleStore.activeRole;
             const roleData = role
 
+            if (actionType === sectionActionType.insert) {
+                await this.insert({
+                    content: this.$state.currentContent,
+                    ...roleData,
+                });
+            }
 
-            switch (actionType) {
-                case 'insert':
-                    this.insert({
-                        content: this.$state.currentContent,
-                        ...roleData,
-                    });
-                    break;
-                case 'delete':
-                    return this.deleteDialog();
-                case 'upInsert':
-                    this.insertBefore({
-                        content: this.$state.currentContent,
-                        ...roleData,
-                    });
-                    break;
-                case 'downInsert':
-                    this.insertAfter({
-                        content: this.$state.currentContent,
-                        ...roleData,
-                    });
-                    break;
-                case 'edit':
-                    this.edit({
-                        id: this.activeSectionId,
-                        content: this.$state.currentContent,
-                        ...roleData,
-                    });
-                    break;
-                default:
-                    break;
+            if (actionType === sectionActionType.delete) {
+                await this.deleteDialog();
+            }
+
+            if (actionType === sectionActionType.upInsert) {
+                await this.insertBefore({
+                    content: this.$state.currentContent,
+                    ...roleData,
+                });
+            }
+
+            if (actionType === sectionActionType.downInsert) {
+                await this.insertAfter({
+                    content: this.$state.currentContent,
+                    ...roleData,
+                });
+            }
+
+            if (actionType === sectionActionType.edit) {
+                console.log(this.activeSectionId);
+                await this.edit({
+                    id: this.activeSectionId,
+                    content: this.$state.currentContent,
+                    ...roleData,
+                });
             }
         },
         /** 删除一条对话 */
@@ -143,7 +161,7 @@ export const useDialogStore = defineStore('chapter', {
                 content: data.content,
                 roleId: data.roleId,
             }
-            const res = await http.post<ISectionCreateResponse>(`section/${this.currentChapterId}`, submitData);
+            const res = await http.post<ISectionCreateResponse>(`section/${this.getCurrentChapterId()}`, submitData);
             this.$state.dialogList.push({
                 ...data,
                 id: res.id,
@@ -185,6 +203,7 @@ export const useDialogStore = defineStore('chapter', {
         },
         /** 编辑 */
         async edit(data: ISection) {
+            console.log(data);
             const submitData = {
                 content: data.content,
             }

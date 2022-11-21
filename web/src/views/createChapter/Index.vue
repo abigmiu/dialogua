@@ -59,6 +59,7 @@ import RoleList from './components/RoleList.vue';
 
 import { useDialogStore } from '@/store/chapter';
 import { useBookStore } from '@/store/book';
+import { sectionActionType } from '@/constant';
 
 const router = useRouter();
 
@@ -83,16 +84,19 @@ const { currentAction, textCount } = storeToRefs(dialogStore);
 const dataList = computed((): ISection[] => dialogStore.$state.dialogList);
 
 /** 编辑，插入处理 */
-const modifyAction = ['edit', 'upInsert', 'downInsert'];
-const isModify = computed(() => modifyAction.includes(currentAction.value));
+const modifyAction = [sectionActionType.edit, sectionActionType.upInsert, sectionActionType.downInsert];
+const isModify = computed(() => {
+    // @ts-ignore
+    return modifyAction.includes(currentAction.value)
+});
 const modifyText = computed(() => {
-    if (currentAction.value === 'edit') return '修改';
-    if (currentAction.value === 'upInsert') return '上插';
-    if (currentAction.value === 'downInsert') return '下插';
+    if (currentAction.value === sectionActionType.edit) return '修改';
+    if (currentAction.value === sectionActionType.upInsert) return '上插';
+    if (currentAction.value === sectionActionType.downInsert) return '下插';
     return '';
 });
 const onCloseAction = () => {
-    dialogStore.$state.currentAction = 'insert';
+    dialogStore.$state.currentAction = sectionActionType.insert;
 };
 
 
