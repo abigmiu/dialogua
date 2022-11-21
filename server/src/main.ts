@@ -24,6 +24,7 @@ async function bootstrap() {
 
     const config = app.get(ConfigService);
     app.setGlobalPrefix(config.get('prefix'));
+    const port = config.get('port');
 
     app.useStaticAssets(join(__dirname, '../upload'), {
         prefix: `${config.get('prefix')}/upload`,
@@ -31,16 +32,18 @@ async function bootstrap() {
 
     const enableSwagger = config.get('enableSwagger');
     if (enableSwagger) {
+        const url = `${config.get('prefix')}-doc`;
+
         const options = new DocumentBuilder()
             .setTitle('dialogua api')
+            .setDescription(`json 地址:  http://localhost:${port}${url}-json`)
             .setVersion('1.0')
             .addBearerAuth()
             .build();
         const document = SwaggerModule.createDocument(app, options);
-        SwaggerModule.setup(`${config.get('prefix')}-doc`, app, document);
+        SwaggerModule.setup(url, app, document);
     }
 
-    const port = config.get('port');
     await app.listen(port);
     console.log(`app listen in ${port}`);
 

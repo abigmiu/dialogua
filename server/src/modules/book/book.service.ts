@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BookEntity } from 'src/db/book.entity';
 import { UserEntity } from 'src/db/user.entity';
 import { BookListDto, CreateBookDto } from 'src/dto/book.dto';
-import { badReq, CREATE_FAIL, SAME_BOOK_NAME } from 'src/expection';
+import { badReq, BOOK_NOT_EXIT, CREATE_FAIL, SAME_BOOK_NAME } from 'src/expection';
+import { IBookDetailResponse } from 'src/types/book';
 import { LessThan, Repository } from 'typeorm';
 import { ChapterService } from '../chapter/chapter.service';
 
@@ -14,6 +15,21 @@ export class BookService {
         private readonly bookRepo: Repository<BookEntity>,
         private readonly chapterService: ChapterService,
     ) {}
+
+    /** 详情 */
+    async detail(id: number) {
+        const res = await this.bookRepo.findOne({
+            where: {
+                id,
+            },
+        });
+
+        if (!res) {
+            return badReq(BOOK_NOT_EXIT);
+        }
+
+        return new IBookDetailResponse(res);
+    }
 
     async create(userId: number, createBookDto: CreateBookDto) {
         const sameNameRes = await this.bookRepo.findOne({

@@ -3,6 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateChapterDto } from 'src/dto/chapter.dto';
 import { IdParam } from 'src/dto/param.dto';
 import { ChapterService } from './chapter.service';
+import { Public } from 'src/decorator/public';
 
 @ApiTags('章节')
 @Controller('chapter')
@@ -17,6 +18,7 @@ export class ChapterController {
         return this.chapterService.create(+param.id, body);
     }
 
+    @Public()
     @Get('list/:id')
     @ApiOperation({
         summary: '获取本书全部章节',
