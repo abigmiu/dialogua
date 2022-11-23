@@ -9,3 +9,9 @@ export interface ISectionItemResponse {
     roleId: number;
     content: string;
 }
+
+export interface ISectionItemResponseWithRole extends ISectionItemResponse {
+    roleName: string;
+    roleAvatar: string;
+    side: ISectionSide;
+}

@@ -52,7 +52,12 @@ export const useRoleStore = defineStore('role', {
                 side: role.side
             };
         },
+        /** 获取当前书本的角色 */
         async fetchRoleList(bookId: string) {
+            if (bookId ===  this.currentBookId) {
+                return this.roleList;
+            }
+            
             const res = await http.get<IRole[]>(`book-role/list/${bookId}`);
             this.roleList = res;
             return res;

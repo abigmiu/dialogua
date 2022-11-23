@@ -1,5 +1,5 @@
 import { ISection, ISectionAction, ISectionCreate } from '@/types/Dialog';
-import type { ISectionCreateResponse } from '@/types/Section';
+import type { ISectionCreateResponse, ISectionItemResponseWithRole } from '@/types/Section';
 
 import { defineStore } from 'pinia';
 import { useRoleStore } from './role';
@@ -18,11 +18,13 @@ interface IState {
     dialogList: ISection[];
     currentAction: ISectionAction;
     textCount: number;
+    detailSectionList: ISectionItemResponseWithRole[],
 }
 
 export const useDialogStore = defineStore('chapter', {
     state: (): IState => {
         return {
+            detailSectionList: [],
             currentBookId: '',
             currentChapterId: '',
             currentContent: '',
@@ -55,14 +57,11 @@ export const useDialogStore = defineStore('chapter', {
             return this.currentChapterId;
         },
 
-        /** 获取数据 */
-        async fetchDialog(chapterId: string) {
-            const res = await http.get<ISection[]>(`section/list/${chapterId}`)
-
+        mathcRoles(data: ISection[]) {
             const roleStore = useRoleStore();
             const roles = roleStore.roleList;
 
-            res.forEach(section => {
+            data.forEach(section => {
                 if (section.roleId === 0) {
                     section.side = 0;
                 } else {
@@ -74,7 +73,14 @@ export const useDialogStore = defineStore('chapter', {
                     }
                 }
             })
-            this.dialogList = res;
+
+            return data;
+        },
+
+        /** 获取数据 */
+        async fetchDialog(chapterId: string) {
+            const res = await http.get<ISection[]>(`section/list/${chapterId}`)
+            this.dialogList = this.mathcRoles(res);
         },
         /** 当前编辑的对话框 ID */
         changeactiveSectionId(value: number) {
