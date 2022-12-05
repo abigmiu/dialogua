@@ -4,8 +4,10 @@ import { BookEntity } from 'src/db/book.entity';
 import { ChapterEntity } from 'src/db/chapter.entity';
 import { CreateChapterDto } from 'src/dto/chapter.dto';
 import { badReq, BOOK_NOT_EXIT, CREATE_FAIL } from 'src/expection';
+import { handlePageData } from 'src/utils/pager';
 import { text } from 'stream/consumers';
 import { Repository } from 'typeorm';
+import { QueryChapterPageDto } from './dto/query.dto';
 
 @Injectable()
 export class ChapterService {
@@ -75,5 +77,23 @@ export class ChapterService {
         });
 
         return res;
+    }
+
+    /** 分页查询数据 */
+    async getPage(bookId: number, query: QueryChapterPageDto) {
+        const res = await this.chapterRepo.findAndCount({
+            where: {
+                book: {
+                    id: bookId,
+                },
+            },
+            take: query.size,
+            skip: (query.page - 1) * query.size,
+            order: {
+                id: query.desc ? 'DESC' : 'ASC',
+            },
+        });
+
+        return handlePageData(res);
     }
 }
