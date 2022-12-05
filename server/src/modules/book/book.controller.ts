@@ -25,9 +25,7 @@ import { IBookDetailResponse } from 'src/types/book';
 export class BookController {
     constructor(private readonly bookService: BookService) {}
 
-    @ApiOperation({
-        summary: '创建',
-    })
+    @ApiOperation({ summary: '创建' })
     @ApiResponse({
         type: CreateBookResponse,
     })
@@ -40,9 +38,7 @@ export class BookController {
     /** 详情 */
     @Public()
     @Get('detail/:id')
-    @ApiOperation({
-        summary: '书本详情',
-    })
+    @ApiOperation({ summary: '书本详情' })
     @ApiResponse({
         type: IBookDetailResponse,
     })
@@ -50,21 +46,15 @@ export class BookController {
         return this.bookService.detail(param.id);
     }
 
-    @ApiOperation({
-        summary: '获取列表',
-    })
-    @ApiResponse({
-        type: BookEntity,
-    })
+    @ApiOperation({ summary: '获取列表' })
+    @ApiResponse({ type: BookEntity })
     @Public()
     @Get()
     list(@Query() body: BookListDto) {
         return this.bookService.list(body);
     }
 
-    @ApiOperation({
-        summary: '获取当前用户书籍列表',
-    })
+    @ApiOperation({ summary: '获取当前用户书籍列表' })
     @ApiResponse({
         type: BookEntity,
     })

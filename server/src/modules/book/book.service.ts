@@ -22,6 +22,7 @@ export class BookService {
             where: {
                 id,
             },
+            relations: ['user'],
         });
 
         if (!res) {
@@ -85,6 +86,7 @@ export class BookService {
         return res;
     }
 
+    /** 获取用户所有书籍 */
     async getUserBooks(userId: number) {
         const res = await this.bookRepo
             .createQueryBuilder('book')
