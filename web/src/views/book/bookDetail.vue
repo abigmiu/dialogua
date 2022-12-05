@@ -29,7 +29,9 @@
             </div>
 
             <div class="list">
-                <van-list v-model:loading="loading.list" :finished="loading.listFinish" @load="getChapterPager">
+                <van-list
+                    :immediate-check="false"
+                v-model:loading="loading.list" :finished="loading.listFinish" @load="getChapterPager">
                     <van-cell v-for="item in chapterList" :key="item.id" @click="onJumpDetail(item.id)"
                         :value="item.title">{{ item.title }}
                     </van-cell>
@@ -42,7 +44,7 @@
 
 <script lang='ts' setup>
 import { useRouter } from 'vue-router';
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref, reactive, onActivated } from 'vue';
 import { http } from '@/utils/http';
 import { IBook } from '@/types/Book';
 import { sortDirectionType } from '@/constant/index'
@@ -118,9 +120,13 @@ const getDetail = async () => {
     bookDetail.value = res;
 }
 
-onMounted(() => {
+const fetchAllData = () => {
     getDetail();
-})
+    chapterList.length = 0;
+    queryData.page = 0;
+    getChapterPager();
+ 
+}
 
 /** 跳转详情 */
 const onJumpDetail = (chapterId: number) => {
@@ -144,6 +150,15 @@ const onChangeDesc = () => {
     chapterList.length = 0;
     getChapterPager();
 }
+
+let prevId = ''
+onActivated(() => {
+    console.log('bookDetail onActivated');
+    if (prevId !== props.id) {
+        fetchAllData();
+        prevId = props.id;
+    }
+})
 </script>
 
 <style lang="scss" scoped>

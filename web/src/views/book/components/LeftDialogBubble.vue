@@ -22,5 +22,5 @@ const props = defineProps<{
 }>();
 </script>
 <style lang="scss">
-@import 'assets/style/bubble.scss'
+@import '@/assets/style/bubble.scss'
 </style>

@@ -4,7 +4,7 @@ import { keepAliveRoutesName } from '@/constant/index'
 
 <template>
     <router-view v-slot="{ Component }">
-        <keep-alive :include="keepAliveRoutesName">
+        <keep-alive>
             <component :is="Component" />
         </keep-alive>
     </router-view>

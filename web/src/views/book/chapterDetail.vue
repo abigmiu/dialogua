@@ -12,7 +12,7 @@ import type { IChapterResponse } from '@/types/Chapter';
 import type { IPageData } from '@/types/Base';
 import type { ISectionItemResponse, ISectionItemResponseWithRole } from '@/types/Section';
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onActivated } from 'vue';
 import { useRouter } from 'vue-router'
 import SectionItem from './components/SectionItem.vue';
 
@@ -90,12 +90,14 @@ const fetchSection = async (prev = false) => {
 
 }
 
-onMounted(async () => {
+const fetchAllData = async () => {
     fetchDetail();
     await fetchRoles()
+    queryData.page = 0;
     dialogStore.dialogList = [];
+    dialogStore.detailSectionList.length = 0;
     fetchSection();
-})
+}
 
 const onClickLeft = () => {
     router.back();
@@ -120,4 +122,12 @@ const mathcRoles = (data: ISectionItemResponse[]) => {
         return obj;
     })
 }
+
+let prevId = ''
+onActivated(() => {
+    if (prevId !== props.id) {
+        fetchAllData();
+        prevId = props.id;
+    }
+})
 </script>
