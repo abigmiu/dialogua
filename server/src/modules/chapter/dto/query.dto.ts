@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 
 /** 分页查询章节 */
@@ -15,7 +15,7 @@ export class QueryChapterPageDto {
     size: number = 10;
 
     @ApiProperty({ description: '倒序', required: false, default: false })
-    @Type(() => Boolean)
+    @Transform(({ value }) => (value === 'false' ? false : true))
     @IsOptional()
     desc: boolean = false;
 }

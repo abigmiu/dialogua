@@ -12,3 +12,79 @@
         white-space: pre-wrap;
     }
 }
+
+.dialog-wrapper {
+    padding-right: 80px;
+
+    .avatar {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 12px;
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+    .content {
+        position: relative;
+        // flex: 1;
+    }
+    &.right-bubble {
+        flex-direction: row-reverse;
+        padding-right: 0;
+        padding-left: 80px;
+        .name {
+            text-align: right;
+        }
+        .avatar {
+            margin-right: 0;
+            margin-left: 12px;
+        }
+    }
+}
+
+.bubble-content {
+    background: #fff;
+    border-color: #fff;
+    padding: 8px 12px;
+    border-radius: 12px;
+    position: relative;
+    font-size: 16px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        border: 8px solid transparent;
+        border-bottom-color: inherit;
+        border-inline-end-color: inherit;
+        margin-inline-start: -20px;
+        top: 4px;
+        border-bottom-left-radius: 80%;
+        transform: rotate(25deg) skewX(10deg);
+    }
+
+    &.right-bubble {
+        .bubble {
+            background: #00aff3;
+            border-color: #00aff3;
+            color: #fff;
+            &::before {
+                display: none;
+            }
+            &::after {
+                content: '';
+                position: absolute;
+                border: 8px solid transparent;
+                border-bottom-color: inherit;
+                top: 4px;
+                border-bottom-right-radius: 80%;
+                transform: rotate(-25deg) skewX(-10deg);
+                right: -8px;
+            }
+        }
+    }
+}

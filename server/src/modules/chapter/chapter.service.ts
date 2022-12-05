@@ -81,6 +81,7 @@ export class ChapterService {
 
     /** 分页查询数据 */
     async getPage(bookId: number, query: QueryChapterPageDto) {
+        console.log(query.desc);
         const res = await this.chapterRepo.findAndCount({
             where: {
                 book: {

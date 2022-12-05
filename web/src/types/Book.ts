@@ -3,6 +3,7 @@ export interface IBook {
     title: string;
     cover: string;
     intro: string;
+    author: string;
 }
 
 export interface ICreateBook {

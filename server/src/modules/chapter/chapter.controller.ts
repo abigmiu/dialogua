@@ -50,6 +50,7 @@ export class ChapterController {
     @ApiOperation({ summary: '分页查询章节' })
     @ApiPager(ChapterEntity)
     getPage(@Param() param: IdParam, @Query() query: QueryChapterPageDto) {
+        console.log(query);
         return this.chapterService.getPage(param.id, query);
     }
 }
